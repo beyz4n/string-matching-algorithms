@@ -1,6 +1,6 @@
 
 
-
+//buraya comment yazdım
 int main(){
 
     
