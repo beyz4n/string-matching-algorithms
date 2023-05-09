@@ -48,6 +48,128 @@ void horspools(char text[],char pattern[]){
     }
 
 }
+
+
+// Function to generate good suffix table
+void GoodSuffixGenerator(int* goodSuffixTable, char* pattern){
+    int patternLength = strlen(pattern);
+    goodSuffixTable[0] = 0;
+    int check = 0;
+    int index;
+    int shiftNumber = patternLength;
+
+    for(int match = 1; match < patternLength; match++){ // for each match number
+        for(int i = patternLength - 2 ; i >= 0; i--){ // to find matched part in pattern
+            check = 0;
+            if(pattern[i] == pattern[patternLength - 1]){
+                check = 1;
+                index = i;
+                for(int j = 1; j <= match; j++){
+                    if(pattern[index] != pattern[patternLength - j]){
+                        check = 0;
+                    }
+                    index--;
+                    if(index == -1){
+                        break;
+                    }
+                }
+            }
+            if(check && pattern[patternLength - match - 1] != pattern[i - match] ){
+                shiftNumber = patternLength - i - 1;
+                break;
+            }
+        }
+        goodSuffixTable[match] = shiftNumber;
+        shiftNumber = patternLength;
+    }
+
+    /*
+    printf("Good suffix table \n");
+    for(int i = 0; i < patternLength; i++){
+        printf("%d ", goodSuffixTable[i]);
+    }
+    printf("\n");
+     */
+}
+
+int Boyer_Moore_Alg(char* pattern, char* text){
+    int d1;
+    int d2;
+    int patterLength = strlen(pattern);
+    int textIndex = patterLength - 1;
+    int numberOfMatch;
+    char currentCh = text[textIndex];
+    int goodSuffixTable[patterLength] = {0};
+    GoodSuffixGenerator(goodSuffixTable ,pattern);
+    int badSymbolTable[128] = {0};
+    createShiftTable(badSymbolTable, pattern);
+    int indexInBadSymbol;
+    int found = 0;
+    int count = 0;
+
+    printf("Good suffix table \n");
+    for(int i = 0; i < strlen(pattern); i++){
+        printf("%d ", goodSuffixTable[i]);
+    }
+    printf("\n");
+/*
+    printf("bad symbol table: \n");
+    for(int r = 0; r < 2; r++){
+        for(int c = numberOfDifferentCh(pattern) - 1; c >= 0; c--){
+            printf("%c  ", badSymbolTable[r][c]);
+        }
+        printf("\n");
+    }
+    */
+
+
+    while(textIndex < strlen(text)){
+        numberOfMatch = 0;
+        for(int i = textIndex, patternIndex = strlen(pattern) - 1 ; patternIndex >= 0 ; i--, patternIndex--){
+            if(pattern[patternIndex] == text[i]){
+                numberOfMatch++;
+            }
+            else
+                break;
+        }
+
+        // If pattern is found
+        if(numberOfMatch == strlen(pattern)){
+            textIndex += strlen(pattern);
+            currentCh = text[textIndex];
+            count++;
+            continue;
+        }
+
+        // To find d1 value
+        for(indexInBadSymbol = 0; indexInBadSymbol < numberOfDifferentCh(pattern); indexInBadSymbol++){
+            if(badSymbolTable[0][indexInBadSymbol] == currentCh){
+                found = 1;
+                d1 = max(badSymbolTable[1][indexInBadSymbol] - numberOfMatch, 1);
+                break;
+            }
+        }
+        if(!found) {
+            d1 = max(strlen(pattern) - numberOfMatch, 1);
+        }
+
+
+        if(numberOfMatch == 0){ // find shift value from bad symbol table
+            textIndex += d1;
+            currentCh = text[textIndex];
+        }
+        else{ // find shift value from good suffix table
+            d2 = goodSuffixTable[numberOfMatch];
+            textIndex += max(d1, d2);
+            currentCh = text[textIndex];
+        }
+    }
+    printf("number of count %d\n", count);
+    return count;
+}
+
+
+
 int main(){
     //horspools("BARD LOVED BANANAS", "BAOBAB");
     horspools("GCATCGCAGAGAGTATACAGTACG", "GCAGAGAG");
