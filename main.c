@@ -1,5 +1,7 @@
 #include <string.h>
 #include <stdio.h>
+#define max(x,y) ((x>y) ? x : y)
+
 // occurence counter for horspool's algorithm
 int horspoolsOccurence;
 // this method creates a shift table for a given pattern
@@ -99,7 +101,7 @@ int Boyer_Moore_Alg(char* pattern, char* text){
     int textIndex = patterLength - 1;
     int numberOfMatch;
     char currentCh = text[textIndex];
-    int goodSuffixTable[patterLength] = {0};
+    int goodSuffixTable[1000] = {0}; // olmuyor bu
     GoodSuffixGenerator(goodSuffixTable ,pattern);
     int badSymbolTable[128] = {0};
     createShiftTable(badSymbolTable, pattern);
@@ -142,17 +144,7 @@ int Boyer_Moore_Alg(char* pattern, char* text){
         }
 
         // To find d1 value
-        for(indexInBadSymbol = 0; indexInBadSymbol < numberOfDifferentCh(pattern); indexInBadSymbol++){
-            if(badSymbolTable[0][indexInBadSymbol] == currentCh){
-                found = 1;
-                d1 = max(badSymbolTable[1][indexInBadSymbol] - numberOfMatch, 1);
-                break;
-            }
-        }
-        if(!found) {
-            d1 = max(strlen(pattern) - numberOfMatch, 1);
-        }
-
+        d1 = max(badSymbolTable[currentCh] - numberOfMatch, 1);
 
         if(numberOfMatch == 0){ // find shift value from bad symbol table
             textIndex += d1;
@@ -172,9 +164,14 @@ int Boyer_Moore_Alg(char* pattern, char* text){
 
 int main(){
     //horspools("BARD LOVED BANANAS", "BAOBAB");
-    horspools("GCATCGCAGAGAGTATACAGTACG", "GCAGAGAG");
+    //horspools("GCATCGCAGAGAGTATACAGTACG", "GCAGAGAG");
+    //int count = Boyer_Moore_Alg("baubab", "baubababababaubababab");
+    //printf("count %d", count);
+
     //horspools("Hello we are trynaingining somethingnaingining.", "naingining");
     //horspools("HelloHelloHello", "Hello");
+
+
     char pattern[250];
     char filePath[250];
 
@@ -182,8 +179,8 @@ int main(){
     gets(pattern);
     printf("\nenter the html file name: ");
     gets(filePath);
-    
-    FILE *file = fopen(filePath,"r"); 
+
+    FILE *file = fopen(filePath,"r");
 
      if(file == NULL){
         printf("input file could not be found");
@@ -197,7 +194,7 @@ int main(){
 
     char input[arraySize];
     while(!feof(file)){
-        
+
         for(int i = 0 ; !feof(file) && (i<arraySize) ; i++){
             fscanf(file, "%c", input[i]);
         }
