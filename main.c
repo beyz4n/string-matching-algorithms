@@ -4,7 +4,7 @@
 #include <time.h>
 #define max(x,y) ((x>y) ? x : y)
 
-
+int call = 0;
 // this method creates a shift table for a given pattern
 void createShiftTable(int *shiftTable, char pattern[]){
     // maximum 256 unique ascii characters, they all have a position here, 0 if no shift can be given using pattern
@@ -127,6 +127,22 @@ int Boyer_Moore_Alg(char* pattern, char* text, FILE *output){
     GoodSuffixGenerator(goodSuffixTable ,pattern);
     int badSymbolTable[256] = {0};
     createShiftTable(badSymbolTable, pattern);
+    if(!call){
+        
+        printf("Good suffix table \n");
+        for(int i = 0; i < strlen(pattern); i++){
+            printf("%d ", goodSuffixTable[i]);
+        }
+        printf("\n");
+        /*
+        printf("bad symbol table: \n");
+        for(int r = 0; r < 2; r++){
+            
+            printf("\n");
+        }
+        */
+        call++;
+    }
     int indexInBadSymbol;
     int found = 0;
     int count = 0;
