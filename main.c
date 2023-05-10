@@ -65,7 +65,7 @@ int bruteForce(char* string, char* pattern,FILE* file){
     int str_len = strlen(string);
     int pattern_len = strlen(pattern);
     int occurence = 0;
-    for (int i = 0; i < str_len-pattern_len; i++)
+    for (int i = 0; i < str_len-pattern_len+1; i++)
     {
         int j = 0;
         for (j = 0; j < pattern_len; j++)
@@ -205,6 +205,7 @@ int main(){
     char input[arraySize];
     char temp[arraySize];
     int bruteForceOccurence = 0;
+    int boyerOccurence = 0;
     while(!feof(file)){
         int i = 0;
 
@@ -224,6 +225,7 @@ int main(){
         // call functions
         horspools(input, pattern);
         bruteForceOccurence += bruteForce(input,  pattern, file);
+        boyerOccurence += Boyer_Moore_Alg(pattern, input);
 
         if(!feof(file)){
             i -= strlen(pattern);
@@ -235,7 +237,7 @@ int main(){
     }
     fclose(input);
     //printf("%s", input);
-    printf(" horspool occurence: %d\nBrute force occurence: %d\n", horspoolsOccurence, bruteForceOccurence);
+    printf("horspool occurence: %d\nBrute force occurence: %d\nBoyer moore algorith occurence: %d\n", horspoolsOccurence, bruteForceOccurence, boyerOccurence);
     return 1;
     
 }
