@@ -1,5 +1,7 @@
 #include <string.h>
 #include <stdio.h>
+#define max(x,y) ((x>y) ? x : y)
+
 // occurence counter for horspool's algorithm
 int horspoolsOccurence;
 // this method creates a shift table for a given pattern
@@ -11,7 +13,7 @@ void createShiftTable(int *shiftTable, char pattern[]){
     while(currentPt >= 0){
         // if we didn't fill this place before by checking if it is found or not
         if( shiftTable[pattern[currentPt]] == 0)
-            shiftTable[pattern[currentPt]] = strlen(pattern) - currentPt + 1;
+            shiftTable[pattern[currentPt]] = strlen(pattern) - currentPt - 1;
         // move to left
         currentPt--;
     }
@@ -46,13 +48,149 @@ void horspools(char text[],char pattern[]){
             currentPt += (shift != 6 ? (shift + (patternLen - (currentPt % patternLen) + 1)) : shift);
         }
     }
+}
+
+int bruteForce(char* string, char* pattern,FILE* file){
+
+    int str_len = strlen(string);
+    int pattern_len = strlen(pattern);
+
+    int occurance = 0;
+
+    for (int i = 0; i < str_len-pattern_len; i++)
+    {
+        int j = 0;
+        for (j = 0; j < pattern_len; j++)
+        {
+            if (pattern[j] != string[i+j])
+            break;
+        }
+
+        if (j == pattern_len)
+            occurance++;
+        
+        
+    }
+        return occurance;
 
 }
+
+
+// Function to generate good suffix table
+void GoodSuffixGenerator(int* goodSuffixTable, char* pattern){
+    int patternLength = strlen(pattern);
+    goodSuffixTable[0] = 0;
+    int check = 0;
+    int index;
+    int shiftNumber = patternLength;
+
+    for(int match = 1; match < patternLength; match++){ // for each match number
+        for(int i = patternLength - 2 ; i >= 0; i--){ // to find matched part in pattern
+            check = 0;
+            if(pattern[i] == pattern[patternLength - 1]){
+                check = 1;
+                index = i;
+                for(int j = 1; j <= match; j++){
+                    if(pattern[index] != pattern[patternLength - j]){
+                        check = 0;
+                    }
+                    index--;
+                    if(index == -1){
+                        break;
+                    }
+                }
+            }
+            if(check && pattern[patternLength - match - 1] != pattern[i - match] ){
+                shiftNumber = patternLength - i - 1;
+                break;
+            }
+        }
+        goodSuffixTable[match] = shiftNumber;
+        shiftNumber = patternLength;
+    }
+
+    /*
+    printf("Good suffix table \n");
+    for(int i = 0; i < patternLength; i++){
+        printf("%d ", goodSuffixTable[i]);
+    }
+    printf("\n");
+     */
+}
+
+int Boyer_Moore_Alg(char* pattern, char* text){
+    int d1;
+    int d2;
+    int patterLength = (int) strlen(pattern);
+    int textIndex = patterLength - 1;
+    int numberOfMatch;
+    char currentCh = text[textIndex];
+    int goodSuffixTable[patterLength];
+    GoodSuffixGenerator(goodSuffixTable ,pattern);
+    int badSymbolTable[128] = {0};
+    createShiftTable(badSymbolTable, pattern);
+    int indexInBadSymbol;
+    int found = 0;
+    int count = 0;
+/*
+    printf("Good suffix table \n");
+    for(int i = 0; i < strlen(pattern); i++){
+        printf("%d ", goodSuffixTable[i]);
+    }
+    printf("\n");
+*/
+
+    while(textIndex < strlen(text)){
+        numberOfMatch = 0;
+        // count number of match
+        for(int i = textIndex, patternIndex = strlen(pattern) - 1 ; patternIndex >= 0 ; i--, patternIndex--){
+            if(pattern[patternIndex] == text[i]){
+                numberOfMatch++;
+            }
+            else
+                break;
+        }
+
+        // If number of match is equal to pattern length: pattern is found
+        if(numberOfMatch == strlen(pattern)){
+            textIndex += strlen(pattern); // shift by pattern length
+            currentCh = text[textIndex]; // update current char
+            count++;
+            continue;
+        }
+
+        // To find d1 value
+        d1 = max(badSymbolTable[currentCh] - numberOfMatch, 1);
+
+        if(numberOfMatch == 0){ // find shift value from bad symbol table
+            textIndex += d1;
+            currentCh = text[textIndex];
+        }
+        else{ // find shift value from good suffix table
+            d2 = goodSuffixTable[numberOfMatch];
+            textIndex += max(d1, d2);
+            currentCh = text[textIndex];
+        }
+    }
+    printf("number of count %d\n", count);
+    return count;
+}
+
+
+
+
 int main(){
     //horspools("BARD LOVED BANANAS", "BAOBAB");
-    horspools("GCATCGCAGAGAGTATACAGTACG", "GCAGAGAG");
+    // horspools("GCATCGCAGAGAGTATACAGTACG", "GCAGAGAG");
+    int count = Boyer_Moore_Alg("baubabab", "baubababhdshsdhbaubababdjsbausdbauubab");
+    printf("count %d", count);
+
     //horspools("Hello we are trynaingining somethingnaingining.", "naingining");
     //horspools("HelloHelloHello", "Hello");
+    //printf("brute force test ocurrance: %d", bruteForce("GCATCGCAGAGAGTATACAGTACG","GCAGAGAG",NULL));
+
+
+    /*
     char pattern[250];
     char filePath[250];
 
@@ -60,8 +198,8 @@ int main(){
     gets(pattern);
     printf("\nenter the html file name: ");
     gets(filePath);
-    
-    FILE *file = fopen(filePath,"r"); 
+
+    FILE *file = fopen(filePath,"r");
 
      if(file == NULL){
         printf("input file could not be found");
@@ -75,7 +213,7 @@ int main(){
 
     char input[arraySize];
     while(!feof(file)){
-        
+
         for(int i = 0 ; !feof(file) && (i<arraySize) ; i++){
             fscanf(file, "%c", input[i]);
         }
@@ -83,4 +221,5 @@ int main(){
     }
 printf("%d", horspoolsOccurence);
     return 1;
+    */
 }
