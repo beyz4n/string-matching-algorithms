@@ -182,22 +182,30 @@ int Boyer_Moore_Alg(char* pattern, char* text){
 int main(){
     //horspools("BARD LOVED BANANAS", "BAOBAB");
     // horspools("GCATCGCAGAGAGTATACAGTACG", "GCAGAGAG");
-    int count = Boyer_Moore_Alg("baubabab", "baubababhdshsdhbaubababdjsbausdbauubab");
-    printf("count %d", count);
+    //int count = Boyer_Moore_Alg("baubabab", "baubababhdshsdhbaubababdjsbausdbauubab");
+    //printf("count %d", count);
 
     //horspools("Hello we are trynaingining somethingnaingining.", "naingining");
     //horspools("HelloHelloHello", "Hello");
     //printf("brute force test ocurrance: %d", bruteForce("GCATCGCAGAGAGTATACAGTACG","GCAGAGAG",NULL));
 
 
-    /*
+    
     char pattern[250];
     char filePath[250];
+    FILE *fileOptions = fopen("inputOptions.txt","r");
 
-    printf("enter the pattern to be searched: ");
-    gets(pattern);
-    printf("\nenter the html file name: ");
-    gets(filePath);
+    if(fileOptions == NULL){
+        printf("fileOptions file could not be found");
+        exit(1);
+    }
+
+    fgets(pattern, 250, fileOptions);
+    fgets(filePath, 250, fileOptions);
+    fclose(fileOptions);
+    printf("%s%s\n", pattern, filePath);
+    
+    pattern[(strlen(pattern)-1)] = '\0';
 
     FILE *file = fopen(filePath,"r");
 
@@ -212,14 +220,39 @@ int main(){
     }
 
     char input[arraySize];
+    char temp[arraySize];
+    int bruteForceOccurence = 0;
     while(!feof(file)){
+        int i = 0;
 
-        for(int i = 0 ; !feof(file) && (i<arraySize) ; i++){
-            fscanf(file, "%c", input[i]);
+        if( strlen(temp) ){
+            // copy the pattern length of last elements from previous array to new array
+            for(int j = 0; j< strlen(temp);j++){
+                input[j] = temp[j];
+            }
+            *temp = NULL;
         }
+        
+        for(i = 0 ; !feof(file) && (i<arraySize) ; i++){
+            fscanf(file, "%c", &input[i]);
+        }
+        input[--i] = '\0';
+
         // call functions
+        horspools(input, pattern);
+        bruteForceOccurence += bruteForce(input,  pattern, file);
+
+        if(!feof(file)){
+            i -= strlen(pattern);
+            for(int j = 0; 1< arraySize ; i++, j++){
+                temp[j] = input[i];
+            }
+            input[--i] = '\0';
+        }
     }
-printf("%d", horspoolsOccurence);
+    fclose(input);
+    //printf("%s", input);
+    printf(" horspool occurence: %d\nBrute force occurence: %d\n", horspoolsOccurence, bruteForceOccurence);
     return 1;
-    */
+    
 }
