@@ -13,7 +13,7 @@ void createShiftTable(int *shiftTable, char pattern[]){
     while(currentPt >= 0){
         // if we didn't fill this place before by checking if it is found or not
         if( shiftTable[pattern[currentPt]] == 0)
-            shiftTable[pattern[currentPt]] = strlen(pattern) - currentPt + 1;
+            shiftTable[pattern[currentPt]] = strlen(pattern) - currentPt - 1;
         // move to left
         currentPt--;
     }
@@ -97,36 +97,28 @@ void GoodSuffixGenerator(int* goodSuffixTable, char* pattern){
 int Boyer_Moore_Alg(char* pattern, char* text){
     int d1;
     int d2;
-    int patterLength = strlen(pattern);
+    int patterLength = (int) strlen(pattern);
     int textIndex = patterLength - 1;
     int numberOfMatch;
     char currentCh = text[textIndex];
-    int goodSuffixTable[1000] = {0}; // olmuyor bu
+    int goodSuffixTable[patterLength];
     GoodSuffixGenerator(goodSuffixTable ,pattern);
     int badSymbolTable[128] = {0};
     createShiftTable(badSymbolTable, pattern);
     int indexInBadSymbol;
     int found = 0;
     int count = 0;
-
+/*
     printf("Good suffix table \n");
     for(int i = 0; i < strlen(pattern); i++){
         printf("%d ", goodSuffixTable[i]);
     }
     printf("\n");
-/*
-    printf("bad symbol table: \n");
-    for(int r = 0; r < 2; r++){
-        for(int c = numberOfDifferentCh(pattern) - 1; c >= 0; c--){
-            printf("%c  ", badSymbolTable[r][c]);
-        }
-        printf("\n");
-    }
-    */
-
+*/
 
     while(textIndex < strlen(text)){
         numberOfMatch = 0;
+        // count number of match
         for(int i = textIndex, patternIndex = strlen(pattern) - 1 ; patternIndex >= 0 ; i--, patternIndex--){
             if(pattern[patternIndex] == text[i]){
                 numberOfMatch++;
@@ -135,10 +127,10 @@ int Boyer_Moore_Alg(char* pattern, char* text){
                 break;
         }
 
-        // If pattern is found
+        // If number of match is equal to pattern length: pattern is found
         if(numberOfMatch == strlen(pattern)){
-            textIndex += strlen(pattern);
-            currentCh = text[textIndex];
+            textIndex += strlen(pattern); // shift by pattern length
+            currentCh = text[textIndex]; // update current char
             count++;
             continue;
         }
@@ -164,14 +156,14 @@ int Boyer_Moore_Alg(char* pattern, char* text){
 
 int main(){
     //horspools("BARD LOVED BANANAS", "BAOBAB");
-    //horspools("GCATCGCAGAGAGTATACAGTACG", "GCAGAGAG");
-    //int count = Boyer_Moore_Alg("baubab", "baubababababaubababab");
-    //printf("count %d", count);
+    // horspools("GCATCGCAGAGAGTATACAGTACG", "GCAGAGAG");
+    int count = Boyer_Moore_Alg("baubabab", "baubababhdshsdhbaubababdjsbausdbauubab");
+    printf("count %d", count);
 
     //horspools("Hello we are trynaingining somethingnaingining.", "naingining");
     //horspools("HelloHelloHello", "Hello");
 
-
+    /*
     char pattern[250];
     char filePath[250];
 
@@ -202,4 +194,5 @@ int main(){
     }
 printf("%d", horspoolsOccurence);
     return 1;
+    */
 }
