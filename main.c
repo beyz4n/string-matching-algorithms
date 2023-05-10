@@ -134,13 +134,12 @@ int Boyer_Moore_Alg(char* pattern, char* text, FILE *output){
             printf("%d ", goodSuffixTable[i]);
         }
         printf("\n");
-        /*
+        
         printf("bad symbol table: \n");
-        for(int r = 0; r < 2; r++){
-            
-            printf("\n");
+        for(int i = 0; i < 256; i++){
+            int shift = badSymbolTable[i] == 0 ? patternLength : badSymbolTable[i];
+            printf("%c - > %d\n", i, shift);
         }
-        */
         call++;
     }
     int indexInBadSymbol;
