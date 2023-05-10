@@ -1,10 +1,9 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #define max(x,y) ((x>y) ? x : y)
 
-// occurence counter for horspool's algorithm
-int horspoolsOccurence;
 
 // this method creates a shift table for a given pattern
 void createShiftTable(int *shiftTable, char pattern[]){
@@ -23,7 +22,9 @@ void createShiftTable(int *shiftTable, char pattern[]){
 }
 
 // this method takes input arguments as text and pattern as a char array
-void horspools(char text[],char pattern[]){
+int horspools(char text[],char pattern[], FILE *output){
+    // occurence counter for horspool's algorithm
+    int horspoolsOccurence = 0;
     int patternLen = strlen(pattern);
     // in Horspool's Algorithm we start from the pattern's right hand side and align it
     int currentPt = patternLen - 1;
@@ -60,9 +61,10 @@ void horspools(char text[],char pattern[]){
             patternPt =  patternLen - 1;
         }
     }
+    return horspoolsOccurence;
 }
 
-int bruteForce(char* string, char* pattern,FILE* file){
+int bruteForce(char* string, char* pattern,FILE* output){
     int str_len = strlen(string);
     int pattern_len = strlen(pattern);
     int occurence = 0;
@@ -114,7 +116,7 @@ void GoodSuffixGenerator(int* goodSuffixTable, char* pattern){
     }
 }
 
-int Boyer_Moore_Alg(char* pattern, char* text){
+int Boyer_Moore_Alg(char* pattern, char* text, FILE *output){
     int d1;
     int d2;
     int patternLength = (int) strlen(pattern);
@@ -192,6 +194,7 @@ int main(){
     pattern[(strlen(pattern)-1)] = '\0';
 
     FILE *file = fopen(filePath,"r");
+    FILE *output = fopen("output.html", "w");
 
      if(file == NULL){
         printf("input file could not be found");
@@ -205,40 +208,46 @@ int main(){
 
     char input[arraySize];
     char temp[arraySize];
+    *temp = NULL;
     int bruteForceOccurence = 0;
     int boyerOccurence = 0;
+    int horspoolsOccurence = 0;
+
     while(!feof(file)){
         int i = 0;
 
-        if( strlen(temp) ){
+        if( 0<strlen(temp) ){
             // copy the pattern length of last elements from previous array to new array
             for(int j = 0; j< strlen(temp);j++){
-                input[j] = temp[j];
+                input[j] = temp[j]; 
             }
+            i += strlen(pattern)-1;
             *temp = NULL;
         }
         
-        for(i = 0 ; !feof(file) && (i<arraySize) ; i++){
-            fscanf(file, "%c", &input[i]);
+        for(; !feof(file) && (i<arraySize-1) ; i++){
+            input[i] = fgetc(file);
         }
-        input[--i] = '\0';
+        input[i] = '\0';
 
         // call functions
-        horspools(input, pattern);
-        bruteForceOccurence += bruteForce(input,  pattern, file);
-        boyerOccurence += Boyer_Moore_Alg(pattern, input);
+        
+        bruteForceOccurence += bruteForce(input,  pattern, output);
+        horspoolsOccurence += horspools(input, pattern, output);
+        boyerOccurence += Boyer_Moore_Alg(pattern, input, output);
 
         if(!feof(file)){
-            i -= strlen(pattern);
-            for(int j = 0; 1< arraySize ; i++, j++){
+            i -= strlen(pattern)-1;
+            for(int j = 0; i<arraySize ; i++, j++){
                 temp[j] = input[i];
             }
             input[--i] = '\0';
         }
     }
-    fclose(input);
-    //printf("%s", input);
-    printf("horspool occurence: %d\nBrute force occurence: %d\nBoyer moore algorith occurence: %d\n", horspoolsOccurence, bruteForceOccurence, boyerOccurence);
+    
+    printf("horspool occurence: %d\n", horspoolsOccurence);
+    printf("Brute force occurence: %d\n", bruteForceOccurence);
+    printf("Boyer moore algorith occurence: %d\n", boyerOccurence);
     return 1;
     
 }
