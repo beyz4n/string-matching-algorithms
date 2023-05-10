@@ -4,7 +4,10 @@
 #include <time.h>
 #define max(x,y) ((x>y) ? x : y)
 
-int call = 0;
+short call;
+long long bruteForceComparison;
+long long horspoolComparison;
+long long boyerComparison;
 // this method creates a shift table for a given pattern
 void createShiftTable(int *shiftTable, char pattern[]){
     // maximum 256 unique ascii characters, they all have a position here, 0 if no shift can be given using pattern
@@ -36,6 +39,7 @@ int horspools(char text[],char pattern[], FILE *output){
     while(currentPt < strlen(text)){
         // checking the pattern and text's character is identical or not
         if(text[currentPt] == pattern[patternPt]){
+            horspoolComparison++;
             // if it is the pattern's last element (if  the pattern index is 0)
             if(patternPt == 0){
                 // then we increment the occurence counter
@@ -51,6 +55,7 @@ int horspools(char text[],char pattern[], FILE *output){
         }
         // if it doesn't match then we look at the shift table that we created for this pattern and shift accordingly
         else{
+            horspoolComparison++;
             // find the shift amount using shift table and the text's mismatched character, if it is not zero then we can use that shift amount  
             int shift = (patternPt == (patternLen - 1 )) ? shiftTable[text[currentPt]] : shiftTable[text[currentPt+1]];
             // if the amount is 0 then we have the full pattern length
@@ -73,6 +78,7 @@ int bruteForce(char* string, char* pattern,FILE* output){
         int j = 0;
         for (j = 0; j < pattern_len; j++)
         {
+            bruteForceComparison++;
             if (pattern[j] != string[i+j])
             break;
         }
@@ -149,6 +155,7 @@ int Boyer_Moore_Alg(char* pattern, char* text, FILE *output){
         numberOfMatch = 0;
         // count number of match
         for(int i = textIndex, patternIndex = strlen(pattern) - 1 ; patternIndex >= 0 ; i--, patternIndex--){
+            boyerComparison++;
             if(pattern[patternIndex] == text[i]){
                 numberOfMatch++;
             }
@@ -260,9 +267,9 @@ int main(){
         }
     }
     
-    printf("horspool occurence: %d\n", horspoolsOccurence);
-    printf("Brute force occurence: %d\n", bruteForceOccurence);
-    printf("Boyer moore algorith occurence: %d\n", boyerOccurence);
+    printf("horspool occurence: %d number of comparisons: %lli\n", horspoolsOccurence, horspoolComparison);
+    printf("Brute force occurence: %d number of comparisons: %lld\n", bruteForceOccurence,bruteForceComparison);
+    printf("Boyer moore algorith occurence: %d number of comparisons: %lld\n", boyerOccurence, boyerComparison);
     return 1;
     
 }
