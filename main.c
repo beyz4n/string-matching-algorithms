@@ -137,7 +137,7 @@ int Boyer_Moore_Alg(char* pattern, char* text, FILE *output){
         
         printf("Good suffix table \n");
         for(int i = 1; i < strlen(pattern); i++){
-            printf("k=%d %d\n", (i+1) , goodSuffixTable[i]);
+            printf("k=%d %d\n", i , goodSuffixTable[i]);
         }
         
         printf("bad symbol table: \n");
