@@ -80,7 +80,7 @@ int main(){
     //horspools("HelloHelloHello", "Hello");
     char pattern[250];
     char filePath[250];
-
+    printf("brute force test ocurrance: %d", bruteForce("GCATCGCAGAGAGTATACAGTACG","GCAGAGAG",NULL));
     
     return 1;
 }
