@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #define max(x,y) ((x>y) ? x : y)
 
 // occurence counter for horspool's algorithm
