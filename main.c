@@ -137,10 +137,10 @@ int Boyer_Moore_Alg(char* pattern, char* text, FILE *output){
         
         printf("Good suffix table \n");
         for(int i = 1; i < strlen(pattern); i++){
-            printf("k=%d %d\n", i , goodSuffixTable[i]);
+            printf("k = %d - > %d\n", i , goodSuffixTable[i]);
         }
         
-        printf("bad symbol table: \n");
+        printf("Bad symbol table: \n");
         for(int i = 0; i < 256; i++){
             int shift = badSymbolTable[i] == 0 ? patternLength : badSymbolTable[i];
             printf("%c - > %d\n", i, shift);
@@ -152,6 +152,7 @@ int Boyer_Moore_Alg(char* pattern, char* text, FILE *output){
     int count = 0;
     while(textIndex < strlen(text)){
         numberOfMatch = 0;
+
         // count number of match
         for(int i = textIndex, patternIndex = strlen(pattern) - 1 ; patternIndex >= 0 ; i--, patternIndex--){
             boyerComparison++;
@@ -171,7 +172,8 @@ int Boyer_Moore_Alg(char* pattern, char* text, FILE *output){
         }
 
         // To find d1 value
-        d1 = max(badSymbolTable[currentCh] - numberOfMatch, 1);
+        int shift = badSymbolTable[currentCh] == 0 ? patternLength: badSymbolTable[currentCh];
+        d1 = max( shift- numberOfMatch, 1);
 
         if(numberOfMatch == 0){ // find shift value from bad symbol table
             textIndex += d1;
@@ -229,7 +231,7 @@ int main(){
 
     char input[arraySize];
     char temp[arraySize];
-    *temp = NULL;
+    *temp = '\0';
     int bruteForceOccurence = 0;
     int boyerOccurence = 0;
     int horspoolsOccurence = 0;
@@ -243,7 +245,7 @@ int main(){
                 input[j] = temp[j]; 
             }
             i += strlen(pattern)-1;
-            *temp = NULL;
+            *temp = '\0';
         }
         
         for(; !feof(file) && (i<arraySize-1) ; i++){
@@ -266,9 +268,9 @@ int main(){
         }
     }
     
-    printf("horspool occurence: %d number of comparisons: %lli\n", horspoolsOccurence, horspoolComparison);
-    printf("Brute force occurence: %d number of comparisons: %lld\n", bruteForceOccurence,bruteForceComparison);
-    printf("Boyer moore algorith occurence: %d number of comparisons: %lld\n", boyerOccurence, boyerComparison);
+    printf("Horspool occurence: %d Number of comparisons: %lli\n", horspoolsOccurence, horspoolComparison);
+    printf("Brute force occurence: %d Number of comparisons: %lld\n", bruteForceOccurence,bruteForceComparison);
+    printf("Boyer-Moore algorithm occurence: %d Number of comparisons: %lld\n", boyerOccurence, boyerComparison);
     return 1;
     
 }
