@@ -48,6 +48,30 @@ void horspools(char text[],char pattern[]){
             currentPt += (shift != 6 ? (shift + (patternLen - (currentPt % patternLen) + 1)) : shift);
         }
     }
+}
+
+int bruteForce(char* string, char* pattern,FILE* file){
+
+    int str_len = strlen(string);
+    int pattern_len = strlen(pattern);
+
+    int occurance = 0;
+
+    for (int i = 0; i < str_len-pattern_len; i++)
+    {
+        int j = 0;
+        for (j = 0; j < pattern_len; j++)
+        {
+            if (pattern[j] != string[i+j])
+            break;
+        }
+
+        if (j == pattern_len)
+            occurance++;
+        
+        
+    }
+        return occurance;
 
 }
 
@@ -154,6 +178,7 @@ int Boyer_Moore_Alg(char* pattern, char* text){
 
 
 
+
 int main(){
     //horspools("BARD LOVED BANANAS", "BAOBAB");
     // horspools("GCATCGCAGAGAGTATACAGTACG", "GCAGAGAG");
@@ -162,6 +187,8 @@ int main(){
 
     //horspools("Hello we are trynaingining somethingnaingining.", "naingining");
     //horspools("HelloHelloHello", "Hello");
+    //printf("brute force test ocurrance: %d", bruteForce("GCATCGCAGAGAGTATACAGTACG","GCAGAGAG",NULL));
+
 
     /*
     char pattern[250];
