@@ -46,8 +46,33 @@ void horspools(char text[],char pattern[]){
             currentPt += (shift != 6 ? (shift + (patternLen - (currentPt % patternLen) + 1)) : shift);
         }
     }
+}
+
+int bruteForce(char* string, char* pattern,FILE* file){
+
+    int str_len = strlen(string);
+    int pattern_len = strlen(pattern);
+
+    int occurance = 0;
+
+    for (int i = 0; i < str_len-pattern_len; i++)
+    {
+        int j = 0;
+        for (j = 0; j < pattern_len; j++)
+        {
+            if (pattern[j] != string[i+j])
+            break;
+        }
+
+        if (j == pattern_len)
+            occurance++;
+        
+        
+    }
+    return occurance;
 
 }
+
 int main(){
     //horspools("BARD LOVED BANANAS", "BAOBAB");
     horspools("GCATCGCAGAGAGTATACAGTACG", "GCAGAGAG");
@@ -55,32 +80,7 @@ int main(){
     //horspools("HelloHelloHello", "Hello");
     char pattern[250];
     char filePath[250];
-
-    printf("enter the pattern to be searched: ");
-    gets(pattern);
-    printf("\nenter the html file name: ");
-    gets(filePath);
+    printf("brute force test ocurrance: %d", bruteForce("GCATCGCAGAGAGTATACAGTACG","GCAGAGAG",NULL));
     
-    FILE *file = fopen(filePath,"r"); 
-
-     if(file == NULL){
-        printf("input file could not be found");
-        exit(1);
-    }
-
-    int arraySize = strlen(pattern)*30;
-    if (arraySize >= 500){
-        arraySize = 500;
-    }
-
-    char input[arraySize];
-    while(!feof(file)){
-        
-        for(int i = 0 ; !feof(file) && (i<arraySize) ; i++){
-            fscanf(file, "%c", input[i]);
-        }
-        // call functions
-    }
-printf("%d", horspoolsOccurence);
     return 1;
 }
