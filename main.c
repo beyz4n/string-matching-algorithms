@@ -68,10 +68,14 @@ int horspools(char text[],char pattern[], FILE *output){
             if(patternPt == 0){
                 // then we increment the occurence counter
                 horspoolsOccurence++;
-                // set to next location
-                currentPt += patternLen;
+                // find the shift amount using shift table and the text's mismatched character, if it is not zero then we can use that shift amount  
+                int shift = shiftTable[text[currentPt + patternLen - patternPt - 1]];
+                // if the amount is 0 then we have the full pattern length
+                if(shift == 0) 
+                    shift = patternLen;
+                // increment the text pointer accordingly and reset the pattern pointer 
+                currentPt += (shift + patternLen - patternPt - 1);
                 patternPt =  patternLen - 1;
-                //mark
             }
             // whether if there's a total match or a partial match we increment the current pointer
             currentPt--;
