@@ -148,8 +148,7 @@ int Boyer_Moore_Alg(char* pattern, char* text, FILE *output){
         }
         call++;
     }
-    int indexInBadSymbol;
-    int found = 0;
+
     int count = 0;
     while(textIndex < strlen(text)){
         numberOfMatch = 0;
