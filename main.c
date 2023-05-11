@@ -254,8 +254,17 @@ int main(){
     struct timeval timer1, timer2;
     int patternLength = strlen(pattern);
     // shift table horspool, shift table+good suffix boyer moore
+    gettimeofday(&timer1, NULL);
     createShiftTable(shiftTable, pattern);
-    GoodSuffixGenerator(goodSuffixTable ,pattern);  
+    gettimeofday(&timer2, NULL);
+    horspoolTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
+    boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
+
+    gettimeofday(&timer1, NULL);
+    GoodSuffixGenerator(goodSuffixTable ,pattern);
+    gettimeofday(&timer2, NULL);
+    boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
+      
     printf("Good suffix table \n");
     for(int i = 1; i < strlen(pattern); i++){
         printf("k = %d - > %d\n", i , goodSuffixTable[i]);
