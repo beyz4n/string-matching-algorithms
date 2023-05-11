@@ -1,2 +1,6 @@
+<<<<<<< HEAD
 hi
+=======
+baobab
+>>>>>>> 67d8197837f7dc51b7f2dfd0c5c5922cbf2b893f
 input2.html
