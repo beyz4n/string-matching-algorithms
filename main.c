@@ -200,7 +200,7 @@ int Boyer_Moore_Alg(char* pattern, char* text, FILE *output){
         }
 
         // To find d1 value
-        int shift = shiftTable[currentCh] == 0 ? patternLength: shiftTable[currentCh];
+        int shift = shiftTable[currentCh - numberOfMatch] == 0 ? patternLength: shiftTable[currentCh];
         d1 = max( shift- numberOfMatch, 1);
 
         if(numberOfMatch == 0){ // find shift value from bad symbol table
