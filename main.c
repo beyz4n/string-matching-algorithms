@@ -253,6 +253,7 @@ int main(){
     double horspoolTime = 0.0;
     struct timeval timer1, timer2;
     int patternLength = strlen(pattern);
+    int tempLength = 0;
     // shift table horspool, shift table+good suffix boyer moore
     gettimeofday(&timer1, NULL);
     createShiftTable(shiftTable, pattern);
@@ -276,13 +277,13 @@ int main(){
     }
     while(!feof(file)){
         int i = 0;
-
-        if( 0<strlen(temp) ){
+        tempLength = strlen(temp);
+        if( 0<tempLength ){
             // copy the pattern length of last elements from previous array to new array
-            for(int j = 0; j< strlen(temp);j++){
+            for(int j = 0; j< tempLength ;j++){
                 input[j] = temp[j]; 
             }
-            i += strlen(pattern)-1;
+            i += patternLength-1;
             *temp = '\0';
         }
         
@@ -310,7 +311,7 @@ int main(){
         bruteMarker(pattern,input,output);
         
         if(!feof(file)){
-            i -= strlen(pattern)-1;
+            i -= patternLength-1;
             for(int j = 0; i<ARRAY_SIZE ; i++, j++){
                 temp[j] = input[i];
             }
