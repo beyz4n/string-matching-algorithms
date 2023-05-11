@@ -4,6 +4,7 @@
 #include <time.h>
 #include <sys/time.h>
 #define max(x,y) ((x>y) ? x : y)
+#define ARRAY_SIZE 500
 
 short call;
 long long bruteForceComparison;
@@ -24,6 +25,31 @@ void createShiftTable(int *shiftTable, char pattern[]){
         currentPt--;
     }
 }
+void mark(char* string,char* pattern, int* index1, int index2,int patternlen, FILE* output){
+    
+    char previousString[ARRAY_SIZE];
+    if (index2> ARRAY_SIZE-patternlen)
+    {
+        index2 = ARRAY_SIZE-patternlen;
+    }
+    
+  
+   
+    strncpy(previousString,(string+(*index1)),index2-(*index1));
+    previousString[index2-(*index1)] = '\0';
+
+    if (output)
+    {
+        fputs(previousString,output);
+        fputs("<mark>",output);
+        fputs(pattern, output);
+        fputs("</mark>",output);
+        *index1 = index2+patternlen;
+    }
+ }
+    
+
+
 
 // this method takes input arguments as text and pattern as a char array
 int horspools(char text[],char pattern[], FILE *output){
@@ -74,6 +100,7 @@ int bruteForce(char* string, char* pattern,FILE* output){
     int str_len = strlen(string);
     int pattern_len = strlen(pattern);
     int occurence = 0;
+    int previousIndex = 0;
     for (int i = 0; i < str_len-pattern_len+1; i++)
     {
         int j = 0;
@@ -83,10 +110,13 @@ int bruteForce(char* string, char* pattern,FILE* output){
             if (pattern[j] != string[i+j])
             break;
         }
-        if (j == pattern_len)
+        if (j == pattern_len){
             occurence++;
+            mark(string,pattern,&previousIndex,i,pattern_len,output);
+        }
     }
-        return occurence;
+    mark(string,"",&previousIndex,str_len-1,1,output);
+    return occurence;
 }
 
 // Function to generate good suffix table
@@ -223,14 +253,14 @@ int main(){
         printf("input file could not be found");
         exit(1);
     }
-
+/*
     int arraySize = strlen(pattern)*30;
     if (arraySize >= 500){
         arraySize = 500;
     }
-
-    char input[arraySize];
-    char temp[arraySize];
+*/
+    char input[ARRAY_SIZE];
+    char temp[ARRAY_SIZE];
     *temp = '\0';
     int bruteForceOccurence = 0;
     int boyerOccurence = 0;
@@ -251,7 +281,7 @@ int main(){
             *temp = '\0';
         }
         
-        for(; !feof(file) && (i<arraySize-1) ; i++){
+        for(; !feof(file) && (i<ARRAY_SIZE-1) ; i++){
             input[i] = fgetc(file);
         }
         input[i] = '\0';
@@ -275,7 +305,7 @@ int main(){
         
         if(!feof(file)){
             i -= strlen(pattern)-1;
-            for(int j = 0; i<arraySize ; i++, j++){
+            for(int j = 0; i<ARRAY_SIZE ; i++, j++){
                 temp[j] = input[i];
             }
             input[--i] = '\0';
