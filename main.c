@@ -6,10 +6,12 @@
 #define max(x,y) ((x>y) ? x : y)
 #define ARRAY_SIZE 500
 
-short call;
 long long bruteForceComparison;
 long long horspoolComparison;
 long long boyerComparison;
+int goodSuffixTable[];
+int shiftTable[256];
+
 // this method creates a shift table for a given pattern
 void createShiftTable(int *shiftTable, char pattern[]){
     // maximum 256 unique ascii characters, they all have a position here, 0 if no shift can be given using pattern
@@ -26,18 +28,17 @@ void createShiftTable(int *shiftTable, char pattern[]){
     }
 }
 void mark(char* string,char* pattern, int* index1, int index2,int patternlen, FILE* output){
-    
     char previousString[ARRAY_SIZE];
-    if (index2> ARRAY_SIZE-patternlen)
+    if (index2>= ARRAY_SIZE-patternlen+1)
     {
         index2 = ARRAY_SIZE-patternlen;
+        strncpy(previousString,(string+(*index1)),index2-(*index1));
+        previousString[index2-(*index1)] = '\0';
+        fputs(previousString,output);
+        return;
     }
-    
-  
-   
     strncpy(previousString,(string+(*index1)),index2-(*index1));
     previousString[index2-(*index1)] = '\0';
-
     if (output)
     {
         fputs(previousString,output);
@@ -47,9 +48,6 @@ void mark(char* string,char* pattern, int* index1, int index2,int patternlen, FI
         *index1 = index2+patternlen;
     }
  }
-    
-
-
 
 // this method takes input arguments as text and pattern as a char array
 int horspools(char text[],char pattern[], FILE *output){
@@ -60,8 +58,6 @@ int horspools(char text[],char pattern[], FILE *output){
     int currentPt = patternLen - 1;
     int patternPt = patternLen - 1;
     // create the shift table here
-    int shiftTable[256] = {0};
-    createShiftTable(shiftTable, pattern);
     // while we don't exceeed the text
     while(currentPt < strlen(text)){
         // checking the pattern and text's character is identical or not
@@ -95,8 +91,29 @@ int horspools(char text[],char pattern[], FILE *output){
     }
     return horspoolsOccurence;
 }
-
 int bruteForce(char* string, char* pattern,FILE* output){
+    int str_len = strlen(string);
+    int pattern_len = strlen(pattern);
+    int occurence = 0;
+
+    for (int i = 0; i < str_len-pattern_len+1; i++)
+    {
+        int j = 0;
+        for (j = 0; j < pattern_len; j++)
+        {
+            bruteForceComparison++;
+            if (pattern[j] != string[i+j])
+            break;
+        }
+        if (j == pattern_len)
+            occurence++;
+        
+    }
+
+    return occurence;
+}
+
+int bruteMarker(char* string, char* pattern,FILE* output){
     int str_len = strlen(string);
     int pattern_len = strlen(pattern);
     int occurence = 0;
@@ -115,7 +132,7 @@ int bruteForce(char* string, char* pattern,FILE* output){
             mark(string,pattern,&previousIndex,i,pattern_len,output);
         }
     }
-    mark(string,"",&previousIndex,str_len-1,1,output);
+    mark(string,"",&previousIndex,str_len-1,pattern_len,output);
     return occurence;
 }
 
@@ -159,26 +176,7 @@ int Boyer_Moore_Alg(char* pattern, char* text, FILE *output){
     int patternLength = (int) strlen(pattern);
     int textIndex = patternLength - 1;
     int numberOfMatch;
-    char currentCh = text[textIndex];
-    int goodSuffixTable[patternLength];
-    GoodSuffixGenerator(goodSuffixTable ,pattern);
-    int badSymbolTable[256] = {0};
-    createShiftTable(badSymbolTable, pattern);
-    if(!call){
-        
-        printf("Good suffix table \n");
-        for(int i = 1; i < strlen(pattern); i++){
-            printf("k = %d - > %d\n", i , goodSuffixTable[i]);
-        }
-        
-        printf("Bad symbol table: \n");
-        for(int i = 0; i < 256; i++){
-            int shift = badSymbolTable[i] == 0 ? patternLength : badSymbolTable[i];
-            printf("%c - > %d\n", i, shift);
-        }
-        call++;
-    }
-
+    char currentCh = text[textIndex];    
     int count = 0;
     while(textIndex < strlen(text)){
         numberOfMatch = 0;
@@ -202,11 +200,12 @@ int Boyer_Moore_Alg(char* pattern, char* text, FILE *output){
         }
 
         // To find d1 value
-        int shift = badSymbolTable[currentCh] == 0 ? patternLength: badSymbolTable[currentCh];
+        int shift = shiftTable[currentCh] == 0 ? patternLength: shiftTable[currentCh];
         d1 = max( shift- numberOfMatch, 1);
 
         if(numberOfMatch == 0){ // find shift value from bad symbol table
             textIndex += d1;
+            if(textIndex<ARRAY_SIZE)
             currentCh = text[textIndex];
         }
         else{ // find shift value from good suffix table
@@ -219,17 +218,6 @@ int Boyer_Moore_Alg(char* pattern, char* text, FILE *output){
 }
 
 int main(){
-    //horspools("BARD LOVED BANANAS", "BAOBAB");
-    // horspools("GCATCGCAGAGAGTATACAGTACG", "GCAGAGAG");
-    //int count = Boyer_Moore_Alg("baubabab", "baubababhdshsdhbaubababdjsbausdbauubab");
-    //printf("count %d", count);
-
-    //horspools("Hello we are trynaingining somethingnaingining.", "naingining");
-    //horspools("HelloHelloHello", "Hello");
-    //printf("brute force test ocurrance: %d", bruteForce("GCATCGCAGAGAGTATACAGTACG","GCAGAGAG",NULL));
-
-
-    
     char pattern[250];
     char filePath[250];
     FILE *fileOptions = fopen("inputOptions.txt","r");
@@ -249,16 +237,11 @@ int main(){
     FILE *file = fopen(filePath,"r");
     FILE *output = fopen("output.html", "w");
 
-     if(file == NULL){
+    if(file == NULL){
         printf("input file could not be found");
         exit(1);
     }
-/*
-    int arraySize = strlen(pattern)*30;
-    if (arraySize >= 500){
-        arraySize = 500;
-    }
-*/
+
     char input[ARRAY_SIZE];
     char temp[ARRAY_SIZE];
     *temp = '\0';
@@ -269,6 +252,19 @@ int main(){
     double boyerTime = 0.0;
     double horspoolTime = 0.0;
     struct timeval timer1, timer2;
+    int patternLength = strlen(pattern);
+    // shift table horspool, shift table+good suffix boyer moore
+    createShiftTable(shiftTable, pattern);
+    GoodSuffixGenerator(goodSuffixTable ,pattern);  
+    printf("Good suffix table \n");
+    for(int i = 1; i < strlen(pattern); i++){
+        printf("k = %d - > %d\n", i , goodSuffixTable[i]);
+    }    
+    printf("Bad symbol table: \n");
+    for(int i = 4; i < 256; i++){
+        int shift = shiftTable[i] == 0 ? patternLength : shiftTable[i];
+        printf("%c - > %d\n", i, shift);
+    }
     while(!feof(file)){
         int i = 0;
 
@@ -302,6 +298,7 @@ int main(){
         gettimeofday(&timer2, NULL);
         boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
         
+        bruteMarker(pattern,input,output);
         
         if(!feof(file)){
             i -= strlen(pattern)-1;
@@ -310,10 +307,12 @@ int main(){
             }
             input[--i] = '\0';
         }
+
     }
     printf("Horspool occurence: %d Number of comparisons: %lli Time(ms): %.6f\n", horspoolsOccurence, horspoolComparison, (horspoolTime/1000.0) );
     printf("Brute force occurence: %d Number of comparisons: %lld Time(ms): %.6f\n", bruteForceOccurence,bruteForceComparison, (bruteForceTime/1000.0) );
     printf("Boyer-Moore algorithm occurence: %d Number of comparisons: %lld Time(ms): %.6f\n", boyerOccurence, boyerComparison, (boyerTime/1000.0) );
+    
     return 1;
     
 }

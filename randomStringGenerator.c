@@ -26,16 +26,27 @@ int main(){
     }
 
     int occurenceCounter = 0;
-
-    for(int i = 0; i<length; i++){
+    int random = 32 + rand()%95;
+    for(int i = 0; i<length; ){
         if(rand()%10){
-            putc(32 + rand()%95, outputFile);
+            
+            if (random != 60 && random != 62){
+                putc( random , outputFile );
+                random = 32 + rand()%95;
+                i++;
+            }
+            else{
+                random = 32 + rand()%95;
+                i++;
+            }
+            
         }
         else{
             for(int j = 0; pattern[j] != NULL; j++){
                 putc(pattern[j], outputFile);
             }
             occurenceCounter++;
+            i++;
         }
         
     }
