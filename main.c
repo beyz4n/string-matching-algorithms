@@ -4,59 +4,67 @@
 
 // occurence counter for horspool's algorithm
 int horspoolsOccurence;
+
 // this method creates a shift table for a given pattern
 void createShiftTable(int *shiftTable, char pattern[]){
-    // maximum 500 unique characters, they all have a position here, 0 if no shift can be given using pattern
+    // maximum 256 unique ascii characters, they all have a position here, 0 if no shift can be given using pattern
     // we shouldn't include the last character so -1 - 1
     int currentPt = strlen(pattern) - 2;
     // while we don't exceed the pattern starting from the right to left
     while(currentPt >= 0){
-        // if we didn't fill this place before by checking if it is found or not
+        // if we didn't fill this place before by checking if it is found or not - if 0 then it is empty
         if( shiftTable[pattern[currentPt]] == 0)
+            // fill it in
             shiftTable[pattern[currentPt]] = strlen(pattern) - currentPt - 1;
         // move to left
         currentPt--;
     }
 }
+
 // this method takes input arguments as text and pattern as a char array
 void horspools(char text[],char pattern[]){
     int patternLen = strlen(pattern);
     // in Horspool's Algorithm we start from the pattern's right hand side and align it
     int currentPt = patternLen - 1;
+    int patternPt = patternLen - 1;
     // create the shift table here
-    // TODO: Change the 500 to 128
-    int shiftTable[128] = {0};
+    int shiftTable[256] = {0};
     createShiftTable(shiftTable, pattern);
     // while we don't exceeed the text
     while(currentPt < strlen(text)){
         // checking the pattern and text's character is identical or not
-        if(text[currentPt] == pattern[currentPt % patternLen]){
+        if(text[currentPt] == pattern[patternPt]){
             // if it is the pattern's last element (if  the pattern index is 0)
-            if(currentPt % patternLen == 0){
+            if(patternPt == 0){
                 // then we increment the occurence counter
                 horspoolsOccurence++;
-                //mark
+                // set to next location
                 currentPt += patternLen + 1;
+                patternPt =  patternLen - 1;
+                //mark
             }
             // whether if there's a total match or a partial match we increment the current pointer
             currentPt--;
+            patternPt--;
         }
         // if it doesn't match then we look at the shift table that we created for this pattern and shift accordingly
         else{
-            // find the shift amount using shift table and the text's mismatched character, if it is not zero then we can use that shift amount
-            int shift = shiftTable[text[currentPt+1]] != 0 ? shiftTable[text[currentPt]] : patternLen;
-            currentPt += (shift != 6 ? (shift + (patternLen - (currentPt % patternLen) + 1)) : shift);
+            // find the shift amount using shift table and the text's mismatched character, if it is not zero then we can use that shift amount  
+            int shift = (patternPt == (patternLen - 1 )) ? shiftTable[text[currentPt]] : shiftTable[text[currentPt+1]];
+            // if the amount is 0 then we have the full pattern length
+            if(shift == 0) 
+                shift = patternLen;
+            // increment the text pointer accordingly and reset the pattern pointer 
+            currentPt += (shift + patternLen - patternPt - 1);
+            patternPt =  patternLen - 1;
         }
     }
 }
 
 int bruteForce(char* string, char* pattern,FILE* file){
-
     int str_len = strlen(string);
     int pattern_len = strlen(pattern);
-
-    int occurance = 0;
-
+    int occurence = 0;
     for (int i = 0; i < str_len-pattern_len; i++)
     {
         int j = 0;
@@ -65,16 +73,11 @@ int bruteForce(char* string, char* pattern,FILE* file){
             if (pattern[j] != string[i+j])
             break;
         }
-
         if (j == pattern_len)
-            occurance++;
-        
-        
+            occurence++;
     }
-        return occurance;
-
+        return occurence;
 }
-
 
 // Function to generate good suffix table
 void GoodSuffixGenerator(int* goodSuffixTable, char* pattern){
@@ -108,38 +111,22 @@ void GoodSuffixGenerator(int* goodSuffixTable, char* pattern){
         goodSuffixTable[match] = shiftNumber;
         shiftNumber = patternLength;
     }
-
-    /*
-    printf("Good suffix table \n");
-    for(int i = 0; i < patternLength; i++){
-        printf("%d ", goodSuffixTable[i]);
-    }
-    printf("\n");
-     */
 }
 
 int Boyer_Moore_Alg(char* pattern, char* text){
     int d1;
     int d2;
-    int patterLength = (int) strlen(pattern);
-    int textIndex = patterLength - 1;
+    int patternLength = (int) strlen(pattern);
+    int textIndex = patternLength - 1;
     int numberOfMatch;
     char currentCh = text[textIndex];
-    int goodSuffixTable[patterLength];
+    int goodSuffixTable[patternLength];
     GoodSuffixGenerator(goodSuffixTable ,pattern);
-    int badSymbolTable[128] = {0};
+    int badSymbolTable[256] = {0};
     createShiftTable(badSymbolTable, pattern);
     int indexInBadSymbol;
     int found = 0;
     int count = 0;
-/*
-    printf("Good suffix table \n");
-    for(int i = 0; i < strlen(pattern); i++){
-        printf("%d ", goodSuffixTable[i]);
-    }
-    printf("\n");
-*/
-
     while(textIndex < strlen(text)){
         numberOfMatch = 0;
         // count number of match
@@ -172,43 +159,38 @@ int Boyer_Moore_Alg(char* pattern, char* text){
             currentCh = text[textIndex];
         }
     }
-    printf("number of count %d\n", count);
     return count;
 }
-
-
-
 
 int main(){
     //horspools("BARD LOVED BANANAS", "BAOBAB");
     // horspools("GCATCGCAGAGAGTATACAGTACG", "GCAGAGAG");
-    int count = Boyer_Moore_Alg("baubabab", "baubababhdshsdhbaubababdjsbausdbauubab");
-    printf("count %d", count);
+    //int count = Boyer_Moore_Alg("baubabab", "baubababhdshsdhbaubababdjsbausdbauubab");
+    //printf("count %d", count);
 
     //horspools("Hello we are trynaingining somethingnaingining.", "naingining");
     //horspools("HelloHelloHello", "Hello");
     //printf("brute force test ocurrance: %d", bruteForce("GCATCGCAGAGAGTATACAGTACG","GCAGAGAG",NULL));
 
 
-    /*
+    
     char pattern[250];
     char filePath[250];
+    FILE *fileOptions = fopen("inputOptions.txt","r");
 
-<<<<<<< HEAD
+    if(fileOptions == NULL){
+        printf("fileOptions file could not be found");
+        exit(1);
+    }
+
+    fgets(pattern, 250, fileOptions);
+    fgets(filePath, 250, fileOptions);
+    fclose(fileOptions);
+    printf("%s%s\n", pattern, filePath);
     
-=======
->>>>>>> 9c691874b80e4b5ec5c00f3620fed528b0fa2e10
-    printf("enter the pattern to be searched: ");
-    gets(pattern);
-    printf("\nenter the html file name: ");
-    gets(filePath);
-<<<<<<< HEAD
-    
-    FILE *file = fopen(filePath,"r"); 
-=======
+    pattern[(strlen(pattern)-1)] = '\0';
 
     FILE *file = fopen(filePath,"r");
->>>>>>> 9c691874b80e4b5ec5c00f3620fed528b0fa2e10
 
      if(file == NULL){
         printf("input file could not be found");
@@ -221,25 +203,39 @@ int main(){
     }
 
     char input[arraySize];
+    char temp[arraySize];
+    int bruteForceOccurence = 0;
     while(!feof(file)){
-<<<<<<< HEAD
-        
-=======
+        int i = 0;
 
->>>>>>> 9c691874b80e4b5ec5c00f3620fed528b0fa2e10
-        for(int i = 0 ; !feof(file) && (i<arraySize) ; i++){
-            fscanf(file, "%c", input[i]);
+        if( strlen(temp) ){
+            // copy the pattern length of last elements from previous array to new array
+            for(int j = 0; j< strlen(temp);j++){
+                input[j] = temp[j];
+            }
+            *temp = NULL;
         }
-        // call functions
-    }
-<<<<<<< HEAD
-    printf("%d", horspoolsOccurence);
+        
+        for(i = 0 ; !feof(file) && (i<arraySize) ; i++){
+            fscanf(file, "%c", &input[i]);
+        }
+        input[--i] = '\0';
 
-    printf("brute force test ocurrance: %d", bruteForce("GCATCGCAGAGAGTATACAGTACG","GCAGAGAG",NULL));
-    
-=======
-printf("%d", horspoolsOccurence);
->>>>>>> 9c691874b80e4b5ec5c00f3620fed528b0fa2e10
+        // call functions
+        horspools(input, pattern);
+        bruteForceOccurence += bruteForce(input,  pattern, file);
+
+        if(!feof(file)){
+            i -= strlen(pattern);
+            for(int j = 0; 1< arraySize ; i++, j++){
+                temp[j] = input[i];
+            }
+            input[--i] = '\0';
+        }
+    }
+    fclose(input);
+    //printf("%s", input);
+    printf(" horspool occurence: %d\nBrute force occurence: %d\n", horspoolsOccurence, bruteForceOccurence);
     return 1;
-    */
+    
 }
