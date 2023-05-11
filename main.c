@@ -266,7 +266,7 @@ int main(){
     gettimeofday(&timer2, NULL);
     boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
       
-    printf("Good suffix table \n");
+    printf("Good suffix table: \n");
     for(int i = 1; i < strlen(pattern); i++){
         printf("k = %d - > %d\n", i , goodSuffixTable[i]);
     }    
