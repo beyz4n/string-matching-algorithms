@@ -14,7 +14,7 @@ int main(){
         exit(1);
     }
     char pattern[250];
-    long length = 0;
+    long long length = 0;
 
     fgets(pattern, 250, inputFile);
     printf("enter the length of the file ");
