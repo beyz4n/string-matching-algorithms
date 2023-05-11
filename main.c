@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
 #define max(x,y) ((x>y) ? x : y)
 
 short call;
@@ -235,7 +236,10 @@ int main(){
     int bruteForceOccurence = 0;
     int boyerOccurence = 0;
     int horspoolsOccurence = 0;
-
+    double bruteForceTime = 0.0;
+    double boyerTime = 0.0;
+    double horspoolTime = 0.0;
+    struct timeval timer1, timer2;
     while(!feof(file)){
         int i = 0;
 
@@ -254,11 +258,22 @@ int main(){
         input[i] = '\0';
 
         // call functions
-        
+        mingw_gettimeofday(&timer1, NULL);
         bruteForceOccurence += bruteForce(input,  pattern, output);
+        mingw_gettimeofday(&timer2, NULL);
+        bruteForceTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
+        
+        mingw_gettimeofday(&timer1, NULL);
         horspoolsOccurence += horspools(input, pattern, output);
+        mingw_gettimeofday(&timer2, NULL);
+        horspoolTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
+        
+        mingw_gettimeofday(&timer1, NULL);
         boyerOccurence += Boyer_Moore_Alg(pattern, input, output);
-
+        mingw_gettimeofday(&timer2, NULL);
+        boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
+        
+        
         if(!feof(file)){
             i -= strlen(pattern)-1;
             for(int j = 0; i<arraySize ; i++, j++){
@@ -267,10 +282,9 @@ int main(){
             input[--i] = '\0';
         }
     }
-    
-    printf("Horspool occurence: %d Number of comparisons: %lli\n", horspoolsOccurence, horspoolComparison);
-    printf("Brute force occurence: %d Number of comparisons: %lld\n", bruteForceOccurence,bruteForceComparison);
-    printf("Boyer-Moore algorithm occurence: %d Number of comparisons: %lld\n", boyerOccurence, boyerComparison);
+    printf("Horspool occurence: %d Number of comparisons: %lli Time(ms): %.6f\n", horspoolsOccurence, horspoolComparison, (horspoolTime/1000.0) );
+    printf("Brute force occurence: %d Number of comparisons: %lld Time(ms): %.6f\n", bruteForceOccurence,bruteForceComparison, (bruteForceTime/1000.0) );
+    printf("Boyer-Moore algorithm occurence: %d Number of comparisons: %lld Time(ms): %.6f\n", boyerOccurence, boyerComparison, (boyerTime/1000.0) );
     return 1;
     
 }
