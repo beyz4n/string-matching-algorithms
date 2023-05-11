@@ -10,7 +10,7 @@ long long bruteForceComparison;
 long long horspoolComparison;
 long long boyerComparison;
 int goodSuffixTable[];
-char shiftTable[256];
+int shiftTable[256];
 
 // this method creates a shift table for a given pattern
 void createShiftTable(int *shiftTable, char pattern[]){
@@ -91,7 +91,6 @@ int horspools(char text[],char pattern[], FILE *output){
     }
     return horspoolsOccurence;
 }
-
 int bruteForce(char* string, char* pattern,FILE* output){
     int str_len = strlen(string);
     int pattern_len = strlen(pattern);
@@ -136,7 +135,6 @@ int bruteMarker(char* string, char* pattern,FILE* output){
     mark(string,"",&previousIndex,str_len-1,pattern_len,output);
     return occurence;
 }
-
 
 // Function to generate good suffix table
 void GoodSuffixGenerator(int* goodSuffixTable, char* pattern){
@@ -220,17 +218,6 @@ int Boyer_Moore_Alg(char* pattern, char* text, FILE *output){
 }
 
 int main(){
-    //horspools("BARD LOVED BANANAS", "BAOBAB");
-    // horspools("GCATCGCAGAGAGTATACAGTACG", "GCAGAGAG");
-    //int count = Boyer_Moore_Alg("baubabab", "baubababhdshsdhbaubababdjsbausdbauubab");
-    //printf("count %d", count);
-
-    //horspools("Hello we are trynaingining somethingnaingining.", "naingining");
-    //horspools("HelloHelloHello", "Hello");
-    //printf("brute force test ocurrance: %d", bruteForce("GCATCGCAGAGAGTATACAGTACG","GCAGAGAG",NULL));
-
-
-    
     char pattern[250];
     char filePath[250];
     FILE *fileOptions = fopen("inputOptions.txt","r");
@@ -250,18 +237,11 @@ int main(){
     FILE *file = fopen(filePath,"r");
     FILE *output = fopen("output.html", "w");
 
-
-
-     if(file == NULL){
+    if(file == NULL){
         printf("input file could not be found");
         exit(1);
     }
-/*
-    int arraySize = strlen(pattern)*30;
-    if (arraySize >= 500){
-        arraySize = 500;
-    }
-*/
+
     char input[ARRAY_SIZE];
     char temp[ARRAY_SIZE];
     *temp = '\0';
@@ -281,11 +261,10 @@ int main(){
         printf("k = %d - > %d\n", i , goodSuffixTable[i]);
     }    
     printf("Bad symbol table: \n");
-    for(int i = 0; i < 256; i++){
+    for(int i = 4; i < 256; i++){
         int shift = shiftTable[i] == 0 ? patternLength : shiftTable[i];
         printf("%c - > %d\n", i, shift);
     }
-    
     while(!feof(file)){
         int i = 0;
 
