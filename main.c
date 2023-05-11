@@ -28,9 +28,13 @@ void createShiftTable(int *shiftTable, char pattern[]){
 void mark(char* string,char* pattern, int* index1, int index2,int patternlen, FILE* output){
     
     char previousString[ARRAY_SIZE];
-    if (index2> ARRAY_SIZE-patternlen)
+    if (index2>= ARRAY_SIZE-patternlen+1)
     {
         index2 = ARRAY_SIZE-patternlen;
+        strncpy(previousString,(string+(*index1)),index2-(*index1));
+        previousString[index2-(*index1)] = '\0';
+        fputs(previousString,output);
+        return;
     }
     
   
@@ -100,6 +104,28 @@ int bruteForce(char* string, char* pattern,FILE* output){
     int str_len = strlen(string);
     int pattern_len = strlen(pattern);
     int occurence = 0;
+
+    for (int i = 0; i < str_len-pattern_len+1; i++)
+    {
+        int j = 0;
+        for (j = 0; j < pattern_len; j++)
+        {
+            bruteForceComparison++;
+            if (pattern[j] != string[i+j])
+            break;
+        }
+        if (j == pattern_len)
+            occurence++;
+        
+    }
+
+    return occurence;
+}
+
+int bruteMarker(char* string, char* pattern,FILE* output){
+    int str_len = strlen(string);
+    int pattern_len = strlen(pattern);
+    int occurence = 0;
     int previousIndex = 0;
     for (int i = 0; i < str_len-pattern_len+1; i++)
     {
@@ -115,9 +141,10 @@ int bruteForce(char* string, char* pattern,FILE* output){
             mark(string,pattern,&previousIndex,i,pattern_len,output);
         }
     }
-    mark(string,"",&previousIndex,str_len-1,1,output);
+    mark(string,"",&previousIndex,str_len-1,pattern_len,output);
     return occurence;
 }
+
 
 // Function to generate good suffix table
 void GoodSuffixGenerator(int* goodSuffixTable, char* pattern){
@@ -207,6 +234,7 @@ int Boyer_Moore_Alg(char* pattern, char* text, FILE *output){
 
         if(numberOfMatch == 0){ // find shift value from bad symbol table
             textIndex += d1;
+            if(textIndex<ARRAY_SIZE)
             currentCh = text[textIndex];
         }
         else{ // find shift value from good suffix table
@@ -302,6 +330,7 @@ int main(){
         gettimeofday(&timer2, NULL);
         boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
         
+        bruteMarker(pattern,input,output);
         
         if(!feof(file)){
             i -= strlen(pattern)-1;
@@ -310,10 +339,12 @@ int main(){
             }
             input[--i] = '\0';
         }
+
     }
     printf("Horspool occurence: %d Number of comparisons: %lli Time(ms): %.6f\n", horspoolsOccurence, horspoolComparison, (horspoolTime/1000.0) );
     printf("Brute force occurence: %d Number of comparisons: %lld Time(ms): %.6f\n", bruteForceOccurence,bruteForceComparison, (bruteForceTime/1000.0) );
     printf("Boyer-Moore algorithm occurence: %d Number of comparisons: %lld Time(ms): %.6f\n", boyerOccurence, boyerComparison, (boyerTime/1000.0) );
+    
     return 1;
     
 }
