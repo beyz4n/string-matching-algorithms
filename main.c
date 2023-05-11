@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <unistd.h>
+#include <sys/time.h>
 #define max(x,y) ((x>y) ? x : y)
 
 short call;
@@ -257,19 +257,19 @@ int main(){
         input[i] = '\0';
 
         // call functions
-        mingw_gettimeofday(&timer1, NULL);
+        gettimeofday(&timer1, NULL);
         bruteForceOccurence += bruteForce(input,  pattern, output);
-        mingw_gettimeofday(&timer2, NULL);
+        gettimeofday(&timer2, NULL);
         bruteForceTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
         
-        mingw_gettimeofday(&timer1, NULL);
+        gettimeofday(&timer1, NULL);
         horspoolsOccurence += horspools(input, pattern, output);
-        mingw_gettimeofday(&timer2, NULL);
+        gettimeofday(&timer2, NULL);
         horspoolTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
         
-        mingw_gettimeofday(&timer1, NULL);
+        gettimeofday(&timer1, NULL);
         boyerOccurence += Boyer_Moore_Alg(pattern, input, output);
-        mingw_gettimeofday(&timer2, NULL);
+        gettimeofday(&timer2, NULL);
         boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
         
         
