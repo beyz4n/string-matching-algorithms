@@ -68,7 +68,7 @@ int horspools(char text[],char pattern[], FILE *output){
                 // then we increment the occurence counter
                 horspoolsOccurence++;
                 // set to next location
-                currentPt += patternLen + 1;
+                currentPt += patternLen;
                 patternPt =  patternLen - 1;
                 //mark
             }
@@ -80,7 +80,7 @@ int horspools(char text[],char pattern[], FILE *output){
         else{
             horspoolComparison++;
             // find the shift amount using shift table and the text's mismatched character, if it is not zero then we can use that shift amount  
-            int shift = (patternPt == (patternLen - 1 )) ? shiftTable[text[currentPt]] : shiftTable[text[currentPt+1]];
+            int shift = shiftTable[text[currentPt + patternLen - patternPt - 1]];
             // if the amount is 0 then we have the full pattern length
             if(shift == 0) 
                 shift = patternLen;
@@ -200,7 +200,7 @@ int Boyer_Moore_Alg(char* pattern, char* text, FILE *output){
         }
 
         // To find d1 value
-        int shift = shiftTable[currentCh] == 0 ? patternLength: shiftTable[currentCh];
+        int shift = shiftTable[currentCh - numberOfMatch] == 0 ? patternLength: shiftTable[currentCh];
         d1 = max( shift- numberOfMatch, 1);
 
         if(numberOfMatch == 0){ // find shift value from bad symbol table
@@ -254,8 +254,17 @@ int main(){
     struct timeval timer1, timer2;
     int patternLength = strlen(pattern);
     // shift table horspool, shift table+good suffix boyer moore
+    gettimeofday(&timer1, NULL);
     createShiftTable(shiftTable, pattern);
-    GoodSuffixGenerator(goodSuffixTable ,pattern);  
+    gettimeofday(&timer2, NULL);
+    horspoolTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
+    boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
+
+    gettimeofday(&timer1, NULL);
+    GoodSuffixGenerator(goodSuffixTable ,pattern);
+    gettimeofday(&timer2, NULL);
+    boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
+      
     printf("Good suffix table \n");
     for(int i = 1; i < strlen(pattern); i++){
         printf("k = %d - > %d\n", i , goodSuffixTable[i]);
