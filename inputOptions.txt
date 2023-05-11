@@ -1,2 +1,2 @@
 baobab
-input2.html
+inputs/input2.html

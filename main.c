@@ -271,9 +271,10 @@ int main(){
     }    
     printf("Bad symbol table: \n");
     for(int i = 4; i < 128; i++){
-        int shift = shiftTable[i] == 0 ? patternLength : shiftTable[i];
-        printf("%c - > %d\n", i, shift);
+        if(shiftTable[i])
+            printf("%c - > %d\n", i, shiftTable[i]);
     }
+    printf("other characters - > %d\n", patternLength);
     while(!feof(file)){
         int i = 0;
 
