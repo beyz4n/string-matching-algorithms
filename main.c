@@ -9,6 +9,7 @@
 long long bruteForceComparison;
 long long horspoolComparison;
 long long boyerComparison;
+int shiftTable[128];
 
 // this method creates a shift table for a given pattern
 void createShiftTable(int *shiftTable, char pattern[]){
@@ -49,7 +50,7 @@ void mark(char* string,char* pattern, int* index1, int index2,int patternlen, FI
  }
 
 // this method takes input arguments as text and pattern as a char array
-int horspools(char text[],char pattern[], FILE *output, int* shiftTable){
+int horspools(char text[],char pattern[], FILE *output){
     // occurence counter for horspool's algorithm
     int horspoolsOccurence = 0;
     int patternLen = strlen(pattern);
@@ -176,7 +177,7 @@ void goodSuffixGenerator(int* goodSuffixTable, char* pattern){
 }
 
 // Boyer moore algorithm
-int Boyer_Moore_Alg(char* pattern, char* text, FILE *output, int* goodSuffixTable, int* shiftTable){
+int Boyer_Moore_Alg(char* pattern, char* text, FILE *output, int* goodSuffixTable){
     int d1; // shift amount according to bad symbol table
     int d2; // shift amount according to good suffix table
     int patternLength = (int) strlen(pattern); // length of given pattern
@@ -262,7 +263,6 @@ int main(){
     int tempLength = 0;
     // shift table horspool, shift table+good suffix boyer moore
 
-    int shiftTable[128] = {0};
     gettimeofday(&timer1, NULL);
     createShiftTable(shiftTable, pattern);
     gettimeofday(&timer2, NULL);
@@ -309,12 +309,12 @@ int main(){
         bruteForceTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
         
         gettimeofday(&timer1, NULL);
-        horspoolsOccurence += horspools(input, pattern, output, shiftTable);
+        horspoolsOccurence += horspools(input, pattern, output);
         gettimeofday(&timer2, NULL);
         horspoolTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
         
         gettimeofday(&timer1, NULL);
-        boyerOccurence += Boyer_Moore_Alg(pattern, input, output, goodSuffixTable, shiftTable);
+        boyerOccurence += Boyer_Moore_Alg(pattern, input, output, goodSuffixTable);
         gettimeofday(&timer2, NULL);
         boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
         
