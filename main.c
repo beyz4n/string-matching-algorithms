@@ -73,8 +73,8 @@ int horspools(char text[],char pattern[], FILE *output, int* shiftTable){
                 if(shift == 0) 
                     shift = patternLen;
                 // increment the text pointer accordingly and reset the pattern pointer 
-                currentPt += (shift + patternLen - patternPt - 1);
-                patternPt =  patternLen - 1;
+                currentPt += (shift + patternLen - patternPt - 1) + 1;
+                patternPt =  patternLen;
             }
             // whether if there's a total match or a partial match we increment the current pointer
             currentPt--;
