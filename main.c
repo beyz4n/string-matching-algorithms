@@ -142,7 +142,7 @@ int bruteMarker(char* string, char* pattern,FILE* output){
 }
 
 // Function to generate good suffix table
-int* goodSuffixGenerator(int* goodSuffixTable, char* pattern){
+void goodSuffixGenerator(int* goodSuffixTable, char* pattern){
     int patternLength = strlen(pattern);
     goodSuffixTable[0] = 0;
     int check = 0;
@@ -173,7 +173,6 @@ int* goodSuffixGenerator(int* goodSuffixTable, char* pattern){
         goodSuffixTable[match] = shiftNumber;
         shiftNumber = patternLength;
     }
-    return goodSuffixTable;
 }
 
 // Boyer moore algorithm
