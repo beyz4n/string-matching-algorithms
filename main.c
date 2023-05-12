@@ -92,7 +92,7 @@ int horspools(char text[],char pattern[], FILE *output, int* shiftTable){
             currentPt += (shift + patternLen - patternPt - 1);
             patternPt =  patternLen - 1;
         }
-    }
+    }    
     return horspoolsOccurence;
 }
 
@@ -281,7 +281,7 @@ int main(){
         printf("k = %d - > %d\n", i , goodSuffixTable[i]);
     }    
     printf("Bad symbol table: \n");
-    for(int i = 4; i < 128; i++){
+    for(int i = 0; i < 128; i++){
         if(shiftTable[i])
             printf("%c - > %d\n", i, shiftTable[i]);
     }
