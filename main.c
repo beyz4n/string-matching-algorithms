@@ -173,21 +173,26 @@ void GoodSuffixGenerator(int* goodSuffixTable, char* pattern){
     }
 }
 
+// Boyer moore algorithm
 int Boyer_Moore_Alg(char* pattern, char* text, FILE *output){
-    int d1;
-    int d2;
-    int patternLength = (int) strlen(pattern);
-    int strLength = strlen(text);
+    int d1; // shift amount according to bad symbol table
+    int d2; // shift amount according to good suffix table
+    int patternLength = (int) strlen(pattern); // length of given pattern
+    int textLength = strlen(text); // length of text
     int textIndex = patternLength - 1;
-    int numberOfMatch;
-    char currentCh = text[textIndex];    
-    int count = 0;
-    while(textIndex < strLength){
-        numberOfMatch = 0;
+    int numberOfMatch; // number of character match at each trial
+    char currentCh = text[textIndex];
+    int count = 0; // counter for full match
+    int shift; // shift amount
 
-        // count number of match
+
+    while(textIndex < textLength){
+        numberOfMatch = 0;
+        currentCh = text[textIndex]; // update current char
+
+        // count number of character match at each trial
         for(int i = textIndex, patternIndex = patternLength - 1 ; patternIndex >= 0 ; i--, patternIndex--){
-            boyerComparison++;
+            boyerComparison++; // increment number of comparison for boyer moore
             if(pattern[patternIndex] == text[i]){
                 numberOfMatch++;
             }
@@ -197,25 +202,21 @@ int Boyer_Moore_Alg(char* pattern, char* text, FILE *output){
 
         // If number of match is equal to pattern length: pattern is found
         if(numberOfMatch == patternLength){
-            textIndex += patternLength; // shift by pattern length
-            currentCh = text[textIndex]; // update current char
-            count++;
+            count++; // since pattern is found, increment full-match counter
+            textIndex += shiftTable[currentCh] == 0 ? patternLength: shiftTable[currentCh]; // shift according to bad symbol
             continue;
         }
 
         // To find d1 value
-        int shift = shiftTable[currentCh - numberOfMatch] == 0 ? patternLength: shiftTable[currentCh];
-        d1 = max( shift- numberOfMatch, 1);
+        shift = shiftTable[text[textIndex - numberOfMatch]] == 0 ? patternLength: shiftTable[currentCh];
+        d1 = max( shift - numberOfMatch, 1);
 
-        if(numberOfMatch == 0){ // find shift value from bad symbol table
+        if(numberOfMatch == 0){ // shift for not match
             textIndex += d1;
-            if(textIndex<ARRAY_SIZE)
-            currentCh = text[textIndex];
         }
-        else{ // find shift value from good suffix table
+        else{ // shift for match
             d2 = goodSuffixTable[numberOfMatch];
             textIndex += max(d1, d2);
-            currentCh = text[textIndex];
         }
     }
     return count;
