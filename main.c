@@ -144,35 +144,42 @@ int bruteMarker(char* string, char* pattern,FILE* output){
 
 // Function to generate good suffix table
 void goodSuffixGenerator(int* goodSuffixTable, char* pattern){
-    int patternLength = strlen(pattern);
+    int patternLength = strlen(pattern); // variable to keep pattern length
+    // Since for  match = 0, we will not use good suffix table, so initialize first index with zero.
     goodSuffixTable[0] = 0;
-    int check = 0;
+    int check; // variable to check if there is another occurrence for the match part in the pattern
     int index;
-    int shiftNumber = patternLength;
+    int shiftNumber = patternLength; // if no match, shift amount is pattern length
 
     for(int match = 1; match < patternLength; match++){ // for each match number
         for(int i = patternLength - 2 ; i >= 0; i--){ // to find matched part in pattern
-            check = 0;
-            if(pattern[i] == pattern[patternLength - 1]){
-                check = 1;
-                index = i;
-                for(int j = 1; j <= match; j++){
+            check = 0; // check is 0 for now
+
+            if(pattern[i] == pattern[patternLength - 1]){ // if pattern contains match part again before match at the end
+                check = 1; // check is 1 since we found another occurrence of first character of match
+                index = i; // index variable to keep copy of index of beginning of the second match part
+
+                for(int j = 1; j <= match; j++){ // check if there is another occurrence of match part
                     if(pattern[index] != pattern[patternLength - j]){
                         check = 0;
                     }
                     index--;
-                    if(index == -1){
+                    if(index == -1){ // if index is -1 no need to check anymore
                         break;
                     }
                 }
             }
+            // If there is another occurrence of match part and
+            // if the character before match repeats itself again before the match then
+            // we skip that match and try to find another match without incorrect character
             if(check && pattern[patternLength - match - 1] != pattern[i - match] ){
-                shiftNumber = patternLength - i - 1;
+                shiftNumber = patternLength - i - 1; // calculate shift amount
                 break;
             }
         }
-        goodSuffixTable[match] = shiftNumber;
-        shiftNumber = patternLength;
+        goodSuffixTable[match] = shiftNumber; // add shift amount to table
+        // to access match = 1 value of good suffix => goodSuffixTable[1]
+        shiftNumber = patternLength; // assign pattern length to shift number again
     }
 }
 
@@ -223,6 +230,7 @@ int Boyer_Moore_Alg(char* pattern, char* text, FILE *output, int* goodSuffixTabl
     }
     return count;
 }
+
 // this is the main function where we integrate all the functions above to search for a given pattern in a given input
 // using the brute force algorithm, the horspool algorithm and the boyer-moore algorithm. we mark the pattern in the given input, time the algorithms,
 // find the number of comparisons made and find the total number of occurences and print these.
