@@ -1,2 +1,2 @@
-1111110001111100110101100
-inputs/randombit2.html
+
+inputs/randombit4.html
