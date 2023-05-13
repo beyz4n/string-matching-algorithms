@@ -1,2 +1,2 @@
-wowwow
-inputs/inp1.html
+
+inputs/randombit3.html
