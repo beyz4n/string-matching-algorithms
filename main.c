@@ -13,7 +13,7 @@ int shiftTable[128];
 
 // this method creates a shift table for a given pattern
 void createShiftTable(int *shiftTable, char pattern[]){
-    // maximum 256 unique ascii characters, they all have a position here, 0 if no shift can be given using pattern
+    // maximum 128 unique ascii characters, they all have a position here, 0 if no shift can be given using pattern
     // we shouldn't include the last character so -1 - 1
     int currentPt = strlen(pattern) - 2;
     // while we don't exceed the pattern starting from the right to left
@@ -49,7 +49,7 @@ void mark(char* string,char* pattern, int* index1, int index2,int patternlen, FI
     }
  }
 
-// this method takes input arguments as text and pattern as a char array
+// this method takes input arguments as text and pattern as a char array and finds the occurence number using Horspool's Algorithm
 int horspools(char text[],char pattern[], FILE *output){
     // occurence counter for horspool's algorithm
     int horspoolsOccurence = 0;
@@ -84,7 +84,8 @@ int horspools(char text[],char pattern[], FILE *output){
         // if it doesn't match then we look at the shift table that we created for this pattern and shift accordingly
         else{
             horspoolComparison++;
-            // find the shift amount using shift table and the text's mismatched character, if it is not zero then we can use that shift amount  
+            // find the shift amount using shift table and the text's last character aligned with pattern's last character
+            // if it is not zero then we can use that shift amount  
             int shift = shiftTable[text[currentPt + patternLen - patternPt - 1]];
             // if the amount is 0 then we have the full pattern length
             if(shift == 0) 
@@ -94,6 +95,7 @@ int horspools(char text[],char pattern[], FILE *output){
             patternPt =  patternLen - 1;
         }
     }    
+    // return the occurence number
     return horspoolsOccurence;
 }
 
