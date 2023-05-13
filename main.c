@@ -280,16 +280,16 @@ int main(){
     createShiftTable(shiftTable, pattern);
     gettimeofday(&timer2, NULL);
     // adding the time it took to generate the bad shift table to the horspool algorithm time counter
-    horspoolTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec; // using seconds and nanoseconds to determine the time it took
+    horspoolTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000000) + timer2.tv_usec - timer1.tv_usec; // using seconds and nanoseconds to determine the time it took
     // adding the time it took to generate the bad shift table to the boyer-moore algorithm time counter
-    boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
+    boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000000) + timer2.tv_usec - timer1.tv_usec;
     // here we are doing the same for the good suffix table as above with the bad shift table
     gettimeofday(&timer1, NULL);
     int goodSuffixTable[patternLength];
     goodSuffixGenerator(goodSuffixTable ,pattern);
     gettimeofday(&timer2, NULL);
     // adding the time it took to generate the good suffix table to the boyer-moore algorithm time counter
-    boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
+    boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000000) + timer2.tv_usec - timer1.tv_usec;
       
     printf("Good suffix table: \n");
     for(int i = 1; i < strlen(pattern); i++){
