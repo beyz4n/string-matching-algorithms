@@ -1,5 +1,51 @@
-Catholic church
-boyer moore favorable = church, catholic church maybe
-horspool favorable = wikipedia, empire, moin maybe. aria, empire, sacraments good
+Catholic church:
+
+boyer moore favorable =
+maybe:
+Western civilization; church; catholic church; Christianity in Saudi Arabia;
+Muslim conquests; Enlightenment and modern period; Mit brennender Sorge;
+List of cardinals excommunicated by the Catholic Church
+is a rank of honour bestowed by popes on certain clerics, such as leaders within the Roman Curia, bishops serving in major
+good:
+List of excommunicable offences in the Catholic Church
+
+horspool favorable = 
+maybe:
+wikipedia; empire; moin
+good:
+aria; empire; sacraments good
+
 non existing = moinsen
+
+same number of comparison: 
+Reformation; Eradication of the Church under Stalinism; Pope Francis;
+Anti-clericalism in Mexico; Max Josef Metzger; Nazi persecution of the Catholic Church in Germany;
+questioned the power and influence of the Catholic Church over Western society; Turkey
+
+performance makes no sense to me:
+During the 20th century, the church's global reach continued to grow, despite the rise of anti-Catholic authoritarian regimes and the collapse of European Empires, accompanied by a general decline in religious observance in the West
+Hail Queen of Heaven, the Ocean Star
+
+inp1 :
+
+boyer moore:
+maybe:
+become admire
+
+horspool:
+maybe:
+For who thoroughly her boy estimating conviction. Removed demands expense account in outward tedious do. Particular way thoroughly unaffected projection favourable mrs can projecting own. Thirty it matter enable become admire in giving
+enable; laughing
+good:
+Drawings offended yet answered jennings perceive laughing six did far
+Particular way thoroughly unaffected projection favourable mrs can projecting own. Thirty it matter
+Thirty it matter enable become admire in giving
+
+
+non existing = abendbrot, See goodness
+
+same number of comparison:
+One advanced diverted domestic sex repeated bringing you old; enable; giving; See goodness
+
+
 
