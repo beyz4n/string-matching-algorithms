@@ -366,17 +366,17 @@ int main(){
     createShiftTable(shiftTable, pattern);
     gettimeofday(&timer2, NULL);
     // adding the time it took to generate the bad shift table to the horspool algorithm time counter
-    horspoolTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000000) + timer2.tv_usec - timer1.tv_usec; // using seconds and nanoseconds to determine the time it took
+    horspoolTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec; // using seconds and nanoseconds to determine the time it took
     // adding the time it took to generate the bad shift table to the boyer-moore algorithm time counter
-    boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000000) + timer2.tv_usec - timer1.tv_usec;
+    boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
     // here we are doing the same for the good suffix table as above with the bad shift table
     gettimeofday(&timer1, NULL);
     int goodSuffixTable[patternLength];
     goodSuffixGenerator(goodSuffixTable ,pattern);
     gettimeofday(&timer2, NULL);
     // adding the time it took to generate the good suffix table to the boyer-moore algorithm time counter
-    boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000000) + timer2.tv_usec - timer1.tv_usec;
-      
+    boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
+    // printing the   
     printf("Good suffix table: \n");
     for(int i = 1; i < strlen(pattern); i++){
         printf("k = %d - > %d\n", i , goodSuffixTable[i]);
@@ -412,17 +412,17 @@ int main(){
         bruteForceOccurence += bruteForce(input,  pattern, output); // calling the algorithm
         gettimeofday(&timer2, NULL); // taking the time after the algorithm finishes
         // substracting the time before and after the algorithm and adding it to it's time counter
-        bruteForceTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000000) + timer2.tv_usec - timer1.tv_usec; // using seconds and nanoseconds to find the time passed
+        bruteForceTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec; // using seconds and nanoseconds to find the time passed
         // here we do the same as above with a different algorithm
         gettimeofday(&timer1, NULL);
         horspoolsOccurence += horspools(input, pattern, output);
         gettimeofday(&timer2, NULL);
-        horspoolTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000000) + timer2.tv_usec - timer1.tv_usec;
+        horspoolTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
         // here we do the same as above with a different algorithm
         gettimeofday(&timer1, NULL);
         boyerOccurence += Boyer_Moore_Alg(pattern, input, output, goodSuffixTable);
         gettimeofday(&timer2, NULL);
-        boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000000) + timer2.tv_usec - timer1.tv_usec;
+        boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
         // here we call our marker to mark the pattern
         bruteMarker(input,pattern,piece++);
         // here we store the last patternlength -1 elements of the array on a temporary array so that we don't skip a pattern while dividing the input
@@ -436,14 +436,15 @@ int main(){
 
     }
     fclose(file);
+    
+    // here we print the occurence, number of comparisons and times of each algorithm
+    printf("Horspool occurence: %d Number of comparisons: %lli Time(ms): %4.6f\n", horspoolsOccurence, horspoolComparison, (horspoolTime/1000.0) );
+    printf("Brute force occurence: %d Number of comparisons: %lld Time(ms): %4.6f\n", bruteForceOccurence,bruteForceComparison, (bruteForceTime/1000.0) );
+    printf("Boyer-Moore algorithm occurence: %d Number of comparisons: %lld Time(ms): %4.6f\n", boyerOccurence, boyerComparison, (boyerTime/1000.0) );
     // Opening a new file to read from the beginning
     FILE *markedFile = fopen(filePath,"r");
     markFile(head,patternLength,markedFile,output);
-    // here we print the occurence, number of comparisons and times of each algorithm
-    printf("Horspool occurence: %d Number of comparisons: %lli Time(ms): %.6f\n", horspoolsOccurence, horspoolComparison, (horspoolTime/1000000.0) );
-    printf("Brute force occurence: %d Number of comparisons: %lld Time(ms): %.6f\n", bruteForceOccurence,bruteForceComparison, (bruteForceTime/1000000.0) );
-    printf("Boyer-Moore algorithm occurence: %d Number of comparisons: %lld Time(ms): %.6f\n", boyerOccurence, boyerComparison, (boyerTime/1000000.0) );
-    
+
     return 1;
     
 }
