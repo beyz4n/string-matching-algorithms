@@ -315,7 +315,28 @@ int main(){
     fgets(filePath, 250, fileOptions); // taking the input file path from input options 
     fclose(fileOptions); // closing the file because we won't need it anymore
     printf("%s%s\n", pattern, filePath); // printing the pattern to be searched and the file path of the input file 
+    // checking whether a pattern was entered to the program or not
+    if(pattern[1] == '\0'){
+        printf("pattern could not be found"); // if not, printing error message and exiting the program
+        exit(1);
+    }
+    // checking wether the pattern length exceeds the maximum length of 248
+    if(strlen(pattern) == 249 && pattern[249] == '\0' && pattern[248] != 10 ){
+        printf("pattern length exceeds the maximum of 248"); // if it exceeds the maximum, printing error message and exiting the program
+        exit(1);
+    }
+    // checking wheter a file path was entered to the program or not
+    if(filePath[1] == '\0'){
+        printf("filePath could not be found"); // if not, printing error message and exiting program
+        exit(1);
+    }
+    // checking wether the file Path length exceeds the maximum length of 248
+    if(strlen(filePath) == 249 && filePath[249] == '\0' && filePath[248] != 10 ){
+        printf("file Path length exceeds the maximum of 248"); // if it exceeds the maximum, printing error message and exiting the program
+        exit(1);
+    }
     
+
     pattern[(strlen(pattern)-1)] = '\0'; // setting the last element of the pattern to the end of text char
 
     FILE *file = fopen(filePath,"r"); // creating a FILE for the input file
