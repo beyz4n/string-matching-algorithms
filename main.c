@@ -11,6 +11,32 @@ long long horspoolComparison;
 long long boyerComparison;
 int shiftTable[128];
 
+typedef struct indexNode{
+    //We need to store the occurance indices dynamically and we don't have ArrayLists. So, we have to implement a basic LL.
+    long long index;
+    struct indexNode* next;
+} indexNode;
+
+indexNode* head = NULL;
+indexNode* lastNode = NULL;
+
+//linked list insertion to the last element
+void insertIndex(long long data){
+    indexNode* newIndex = malloc(sizeof(indexNode));
+    newIndex->index = data;
+    newIndex->next = NULL;
+
+    if (head == NULL){
+        head = newIndex;
+        lastNode = newIndex;
+    }else{
+        lastNode->next = newIndex;
+        lastNode = newIndex;
+    }
+}
+
+
+
 // this method creates a shift table for a given pattern
 void createShiftTable(int *shiftTable, char pattern[]){
     // maximum 128 unique ascii characters, they all have a position here, 0 if no shift can be given using pattern
@@ -27,27 +53,66 @@ void createShiftTable(int *shiftTable, char pattern[]){
     }
 }
 
-void mark(char* string,char* pattern, int* index1, int index2,int patternlen, FILE* output){
-    char previousString[ARRAY_SIZE];
-    if (index2>= ARRAY_SIZE-patternlen+1)
-    {
-        index2 = ARRAY_SIZE-patternlen;
-        strncpy(previousString,(string+(*index1)),index2-(*index1));
-        previousString[index2-(*index1)] = '\0';
-        fputs(previousString,output);
-        return;
-    }
-    strncpy(previousString,(string+(*index1)),index2-(*index1));
-    previousString[index2-(*index1)] = '\0';
-    if (output)
-    {
-        fputs(previousString,output);
+void markFile(indexNode* head,int patternlen, FILE* file, FILE* output){
+    indexNode* currentNode = head; //begin with the head of the linked list
+    long long previousIndex = 0;
+
+    while (currentNode != NULL){
+        long long printedCount = currentNode->index - previousIndex;
+        //print the characters before the mark
+        for(; !feof(file)&& printedCount; printedCount--){
+            fputc(fgetc(file),output); // taking input to an array
+        }
+        //if you are at the last node, break the loop
+        if (currentNode->next == NULL)
+            break;
+
+        //mark the pattern
         fputs("<mark>",output);
-        fputs(pattern, output);
+        indexNode* nextNode = currentNode->next;
+        while (nextNode != NULL)
+        {   
+            //if there is a overlapping occurance in the text print overlapping characters.
+            if ((nextNode->index)-(currentNode->index)<patternlen)
+            {
+                printedCount+=(nextNode->index)-(currentNode->index);
+                 currentNode = nextNode;
+                 nextNode = nextNode->next;
+                for(; !feof(file) && printedCount; printedCount--){
+                    fputc(fgetc(file),output);
+                }
+            }else{
+                //if there is no overlap until the next ocurrance print the pattern
+                printedCount = patternlen;
+                for(; !feof(file) && printedCount; printedCount--){
+                    fputc(fgetc(file),output); 
+                }
+                break;
+            }  
+        }
         fputs("</mark>",output);
-        *index1 = index2+patternlen;
+        //Save the previous marked point
+        previousIndex = currentNode->index+patternlen;
+        //go to next node
+        currentNode = nextNode;
     }
- }
+    
+    //mark the last pattern here
+    fputs("<mark>",output);
+    int printedCount = patternlen;
+    for(; !feof(file) && printedCount; printedCount--){
+        fputc(fgetc(file),output); 
+    }
+    fputs("</mark>",output);
+
+    //print the remaining chars
+    while(!feof(file)){
+        char ch  =fgetc(file);
+        if (ch >0)
+        fputc(ch,output);
+
+    }
+}
 
 // this method takes input arguments as text and pattern as a char array and finds the occurence number using Horspool's Algorithm
 int horspools(char text[],char pattern[], FILE *output){
@@ -99,49 +164,48 @@ int horspools(char text[],char pattern[], FILE *output){
     return horspoolsOccurence;
 }
 
+//Simple brute force algorithm
 int bruteForce(char* string, char* pattern,FILE* output){
     int str_len = strlen(string);
     int pattern_len = strlen(pattern);
     int occurence = 0;
 
+    //Iterate the every element in the string
     for (int i = 0; i < str_len-pattern_len+1; i++)
     {
         int j = 0;
         for (j = 0; j < pattern_len; j++)
         {
             bruteForceComparison++;
+            //if there is a mismatch, shift the pattern by 1 
             if (pattern[j] != string[i+j])
             break;
         }
+        //if all matched, increment the occurence
         if (j == pattern_len)
             occurence++;
         
     }
-
     return occurence;
 }
 
-int bruteMarker(char* string, char* pattern,FILE* output){
+int bruteMarker(char* string, char* pattern,int occurIndex){
     int str_len = strlen(string);
     int pattern_len = strlen(pattern);
-    int occurence = 0;
-    int previousIndex = 0;
     for (int i = 0; i < str_len-pattern_len+1; i++)
     {
         int j = 0;
         for (j = 0; j < pattern_len; j++)
         {
-            bruteForceComparison++;
             if (pattern[j] != string[i+j])
             break;
         }
         if (j == pattern_len){
-            occurence++;
-            mark(string,pattern,&previousIndex,i,pattern_len,output);
+            insertIndex(i+((ARRAY_SIZE-pattern_len)*occurIndex));// inserting the next occurance index to mark the file.
         }
     }
-    mark(string,"",&previousIndex,str_len-1,pattern_len,output);
-    return occurence;
+
+    return 1;
 }
 
 // Function to generate good suffix table
@@ -262,6 +326,7 @@ int main(){
         exit(1);
     }
 
+    int piece = 0; // this keeps the information of which section are we in in the file 
     char input[ARRAY_SIZE]; // creating array to hold input
     char temp[ARRAY_SIZE]; // creating temporary array to hold the last patternlength -1 number of elements to add them to the new array(more on this comes later)
     *temp = '\0'; // setting the temporary array to 0
@@ -338,7 +403,7 @@ int main(){
         gettimeofday(&timer2, NULL);
         boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000000) + timer2.tv_usec - timer1.tv_usec;
         // here we call our marker to mark the pattern
-        bruteMarker(pattern,input,output);
+        bruteMarker(input,pattern,piece++);
         // here we store the last patternlength -1 elements of the array on a temporary array so that we don't skip a pattern while dividing the input
         if(!feof(file)){
             i -= patternLength-1;
@@ -349,6 +414,10 @@ int main(){
         }
 
     }
+    fclose(file);
+    // Opening a new file to read from the beginning
+    FILE *markedFile = fopen(filePath,"r");
+    markFile(head,patternLength,markedFile,output);
     // here we print the occurence, number of comparisons and times of each algorithm
     printf("Horspool occurence: %d Number of comparisons: %lli Time(ms): %.6f\n", horspoolsOccurence, horspoolComparison, (horspoolTime/1000000.0) );
     printf("Brute force occurence: %d Number of comparisons: %lld Time(ms): %.6f\n", bruteForceOccurence,bruteForceComparison, (bruteForceTime/1000000.0) );
