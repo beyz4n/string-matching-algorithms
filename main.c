@@ -376,11 +376,12 @@ int main(){
     gettimeofday(&timer2, NULL);
     // adding the time it took to generate the good suffix table to the boyer-moore algorithm time counter
     boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
-    // printing the   
+    // printing the good suffix table using a for loop
     printf("Good suffix table: \n");
     for(int i = 1; i < strlen(pattern); i++){
         printf("k = %d - > %d\n", i , goodSuffixTable[i]);
-    }    
+    }  
+    // printing the bad symbol table using a for loop  
     printf("Bad symbol table: \n");
     for(int i = 0; i < 128; i++){
         if(shiftTable[i])
@@ -438,9 +439,9 @@ int main(){
     fclose(file);
     
     // here we print the occurence, number of comparisons and times of each algorithm
-    printf("Horspool occurence: %d Number of comparisons: %lli Time(ms): %4.6f\n", horspoolsOccurence, horspoolComparison, (horspoolTime/1000.0) );
-    printf("Brute force occurence: %d Number of comparisons: %lld Time(ms): %4.6f\n", bruteForceOccurence,bruteForceComparison, (bruteForceTime/1000.0) );
-    printf("Boyer-Moore algorithm occurence: %d Number of comparisons: %lld Time(ms): %4.6f\n", boyerOccurence, boyerComparison, (boyerTime/1000.0) );
+    printf("Horspool occurence: %d Number of comparisons: %lli Time(ms): %.6f\n", horspoolsOccurence, horspoolComparison, (horspoolTime/1000.0) );
+    printf("Brute force occurence: %d Number of comparisons: %lld Time(ms): %.6f\n", bruteForceOccurence,bruteForceComparison, (bruteForceTime/1000.0) );
+    printf("Boyer-Moore algorithm occurence: %d Number of comparisons: %lld Time(ms): %.6f\n", boyerOccurence, boyerComparison, (boyerTime/1000.0) );
     // Opening a new file to read from the beginning
     FILE *markedFile = fopen(filePath,"r");
     markFile(head,patternLength,markedFile,output);
