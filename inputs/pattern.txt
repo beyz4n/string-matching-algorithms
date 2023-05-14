@@ -139,10 +139,10 @@ random bit 2
 
 boyer moore:
 good:
-1111110001111100110101100;
+1111110001111100110101100; 0000000000000000; 10100111100001010; 111111000000; 100100111100;
+00110010100011110100010111010011010010110011011011111001000010110000100010101101000110010100011001000101001001010000111110000001011;
+maybe:
 00110010100011110100010111010011010010110011011011111001000010110000100010101101000110010100011001000101001001010000111110000001011101001101011100011110011001101000000111101001101001000001100001101110111111100101001011010111000000011010001000000101;
-0000000000000000; 10100111100001010; 111111000000; 100100111100; 
-
 
 horspool:
 maybe:
@@ -160,16 +160,105 @@ good:
 1010; 100000000010000000001;
 1111110001111100110101100;
 1111111111111111; 10100111100001010; 111111000000; 100100111100; 100000000000000000000000000010101001; 
+011110011010011011101010010010110111110010001000001000101101001001100101001110101001001111001101111110011010001100100100111010000001;
 maybe:
 00011000110110001010001001001001001101110011110000000011100100110101000001000010110101001111100100100001101110011100000011011110110100000111001000010000100100010010111101100001101011011000001001010111010100110011011001101110000110111011101001110010;
 01111001101001101110101001001011011111001000100000100010110100100110010100111010100100111100110111111001101000110010010011101000000101101110011111111011111010100111000000111111110100011011101111110100010000011100101101111011100011100111011101100011;
 
-
 horspool:
 maybe:
-1; 100000000000000000000000000001; 
+1; 100000000000000000000000000001; 011111111111111111111111111111110
 
 non existing: waisenhaus; 111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111; 
 
 same number of comparisons:
 1001; 10; 010
+
+
+random bit 4
+
+boyer moore:
+good:
+0101; 011111111101111111110;
+1111110001111100110101100;
+1111111111111111; 10100111100001010; 111111000000; 100100111100; 100000000000000000000000000010101001; 
+0000101000010101110011111000000100011100010011100111001011001110010111101001000001101101000100110000111010011010001111110010000101;
+maybe:
+00001010000101011100111110000001000111000100111001110010110011100101111010010000011011010001001100001110100110100011111100100001011101101011010001111011000010110000111000110010001001000011101100101101111001100011010101000101101101110101100110010000;
+
+horspool:
+maybe:
+0; 1000000000000000000000000000000000000000001; 011111111111111111111111111111111111111111111111111111110
+
+non existing: friedhof; 000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111111111111; 
+
+same number of comparisons:
+1001; 10; 010; 101; 01; 0110
+
+Vietnam War
+
+boyer moore:
+maybe:
+alternate; North Vietnamese soldiers in action; 966,000; Atlanta; Peace; Canada; all; succeeded; government succeeded; needed; Commitment; 
+Two Douglas A-4C Skyhawk fly past the anti-submarine aircraft carrier;
+Various names have been applied to the conflict. "Vietnam War" is the most commonly used name in English; 
+Various names have been applied to the conflict. "Vietnam War" is the most commonly used name in English. It has also been called the "Second Indochina War"; 
+Given that there have been several conflicts in Indochina, this particular conflict is known by its primary protagonists' names to distinguish it from others. In VietnamGiven that there have been several conflicts in Indochina, this particular;
+
+horspool:
+good:
+South Vietnam; Communist; lol; government instituted; Kennedy; 
+
+non existing: jugendamt
+
+same number of comparisons:
+Vietnam; Vietnam War; Hue; United States; government; North Vietnamese government instituted; Poland; Notes; 
+
+
+World War I
+
+boyer moore:
+maybe:
+World War; Treaty of Trianon; World War II; Italo-Turkish War; simultaneously advance into; 
+Europe, Africa, the Middle East, the Pacific Islands, China, Indian Ocean, North and South Atlantic Ocean;
+The first decade of the 20th century saw increasing diplomatic tension between the European great powers. This reached breaking point on 28 June 1914, when a;
+Between 29 September and 3 November 1918, Bulgaria, the Ottoman Empire, and Austria-Hungary agreed to armistices with the Allies, leaving Germany isolated. Facing;
+However, it was also an emotional decision, driven by Wilhelm's simultaneous admiration for the Royal Navy and desire to outdo it. Bismarck calculated that Britain would not interfere in Europe so long as its maritime supremacy remained secure;
+The strategy of the Central Powers suffered from miscommunication. Germany had promised to support Austria-Hungary's invasion of Serbia, but interpretations of what this meant differed. Previously tested deployment plans had been replaced early in;
+Enver Pasha</a>, supreme commander of the Ottoman armed forces, was ambitious and dreamed of re-conquering central Asia and areas that had been lost to Russia previously. He was, however, a poor commander.;
+
+
+horspool:
+good:
+Allied; Europe; Africa; Aftermath of World War I; Weimar Germany; Ottoman Empire; Serbs; Hitler; 
+
+maybe:
+German; 
+
+non existing: abendbrot
+
+same number of comparisons:
+World War I; Turkey; Asia; WWI; successor; Austria; Arab Revolt; 
+
+
+World War II
+
+boyer moore:
+maybe:
+World War II; World War;  61,000,000; Bulgaria; Nationalist Chinese; Although; Barbarossa; three; Emperor; Hirohito; success; Japanese; missiles; 
+changed the political alignment and social structure of the globe and set the foundation for the international order of the world's nations for the rest of the 20th century and into the present day. The ;
+The exact date of the war's end is also not universally agreed upon. It was generally accepted at the time that the war ended with the; 
+Hitler defied the Versailles and; In July 1937, Japan captured the former Chinese imperial capital of; 
+Frustrated at the lack of progress and feeling the pinch of the; 
+the war include the world's first programmable computers;  
+
+
+horspool:
+good: 
+Turkey; Allies; Axis; Italy; Commonwealth; poor; V-1
+
+non existing: Sennheiser
+
+same number of comparisons:
+Reichstag; German; Australian; Battle of Stalingrad; Atomic bombing; Africa; United States; Aftermath of World War I; Adolf Hitler; Germany; Soviets; 
+In response to British requests for direct negotiations to avoid war, Germany made demands on Poland, which only served as a pretext to worsen relations.; 
