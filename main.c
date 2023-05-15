@@ -97,6 +97,7 @@ void markFile(indexNode* head,int patternlen, FILE* file, FILE* output){
         currentNode = nextNode;
     }
     
+    if(head != NULL){
     //mark the last pattern here
     fputs("<mark>",output);
     int printedCount = patternlen;
@@ -104,6 +105,7 @@ void markFile(indexNode* head,int patternlen, FILE* file, FILE* output){
         fputc(fgetc(file),output); 
     }
     fputs("</mark>",output);
+    }
 
     //print the remaining chars
     while(!feof(file)){
