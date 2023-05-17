@@ -240,7 +240,7 @@ void goodSuffixGenerator(int* goodSuffixTable, char* pattern){
             // If there is another occurrence of match part and
             // if the character before match repeats itself again before the match then
             // we skip that match and try to find another match without incorrect character
-            if(check && pattern[patternLength - match - 1] != pattern[i - match] ){
+            if(check && (pattern[patternLength - match - 1] != pattern[i - match] || patternLength == match)){
                 shiftNumber = patternLength - i - 1; // calculate shift amount
                 break;
             }
