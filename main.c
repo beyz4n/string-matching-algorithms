@@ -219,7 +219,7 @@ void goodSuffixGenerator(int* goodSuffixTable, char* pattern){
     int index;
     int shiftNumber = patternLength; // if no match, shift amount is pattern length
 
-    for(int match = 1; match < patternLength; match++){ // for each match number
+    for(int match = 1; match <= patternLength; match++){ // for each match number
         for(int i = patternLength - 2 ; i >= 0; i--){ // to find matched part in pattern
             check = 0; // check is 0 for now
 
@@ -240,7 +240,7 @@ void goodSuffixGenerator(int* goodSuffixTable, char* pattern){
             // If there is another occurrence of match part and
             // if the character before match repeats itself again before the match then
             // we skip that match and try to find another match without incorrect character
-            if(check && pattern[patternLength - match - 1] != pattern[i - match] ){
+            if(check && (pattern[patternLength - match - 1] != pattern[i - match] || patternLength == match)){
                 shiftNumber = patternLength - i - 1; // calculate shift amount
                 break;
             }
@@ -259,7 +259,7 @@ int Boyer_Moore_Alg(char* pattern, char* text, int* goodSuffixTable){
     int textLength = strlen(text); // length of text
     int textIndex = patternLength - 1;
     int numberOfMatch; // number of character match at each trial
-    char currentCh = text[textIndex];
+    char currentCh;
     int count = 0; // counter for full match
     int shift; // shift amount
 
@@ -280,8 +280,6 @@ int Boyer_Moore_Alg(char* pattern, char* text, int* goodSuffixTable){
         // If number of match is equal to pattern length: pattern is found
         if(numberOfMatch == patternLength){
             count++; // since pattern is found, increment full-match counter
-            textIndex += shiftTable[currentCh] == 0 ? patternLength: shiftTable[currentCh]; // shift according to bad symbol
-            continue;
         }
 
         // To find d1 value
@@ -373,14 +371,14 @@ int main(){
     boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
     // here we are doing the same for the good suffix table as above with the bad shift table
     gettimeofday(&timer1, NULL);
-    int goodSuffixTable[patternLength];
+    int goodSuffixTable[patternLength + 1];
     goodSuffixGenerator(goodSuffixTable ,pattern);
     gettimeofday(&timer2, NULL);
     // adding the time it took to generate the good suffix table to the boyer-moore algorithm time counter
     boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
     // printing the good suffix table using a for loop
     printf("Good suffix table: \n");
-    for(int i = 1; i < strlen(pattern); i++){
+    for(int i = 1; i <= strlen(pattern); i++){
         printf("k = %d - > %d\n", i , goodSuffixTable[i]);
     }  
     // printing the bad symbol table using a for loop  
