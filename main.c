@@ -97,6 +97,7 @@ void markFile(indexNode* head,int patternlen, FILE* file, FILE* output){
         currentNode = nextNode;
     }
     
+    if(head != NULL){
     //mark the last pattern here
     fputs("<mark>",output);
     int printedCount = patternlen;
@@ -104,6 +105,7 @@ void markFile(indexNode* head,int patternlen, FILE* file, FILE* output){
         fputc(fgetc(file),output); 
     }
     fputs("</mark>",output);
+    }
 
     //print the remaining chars
     while(!feof(file)){
@@ -115,7 +117,7 @@ void markFile(indexNode* head,int patternlen, FILE* file, FILE* output){
 }
 
 // this method takes input arguments as text and pattern as a char array and finds the occurence number using Horspool's Algorithm
-int horspools(char text[],char pattern[], FILE *output){
+int horspools(char text[],char pattern[]){
     // occurence counter for horspool's algorithm
     int horspoolsOccurence = 0;
     int patternLen = strlen(pattern);
@@ -165,7 +167,7 @@ int horspools(char text[],char pattern[], FILE *output){
 }
 
 //Simple brute force algorithm
-int bruteForce(char* string, char* pattern,FILE* output){
+int bruteForce(char* string, char* pattern){
     int str_len = strlen(string);
     int pattern_len = strlen(pattern);
     int occurence = 0;
@@ -250,7 +252,7 @@ void goodSuffixGenerator(int* goodSuffixTable, char* pattern){
 }
 
 // Boyer moore algorithm
-int Boyer_Moore_Alg(char* pattern, char* text, FILE *output, int* goodSuffixTable){
+int Boyer_Moore_Alg(char* pattern, char* text, int* goodSuffixTable){
     int d1; // shift amount according to bad symbol table
     int d2; // shift amount according to good suffix table
     int patternLength = (int) strlen(pattern); // length of given pattern
@@ -410,18 +412,18 @@ int main(){
         // here we are calling our 3 different algorithms to search the given pattern in the given array
         // we also time the different algorithms and add their time to their counter respectively
         gettimeofday(&timer1, NULL);// taking time before the algorithm start
-        bruteForceOccurence += bruteForce(input,  pattern, output); // calling the algorithm
+        bruteForceOccurence += bruteForce(input,  pattern); // calling the algorithm
         gettimeofday(&timer2, NULL); // taking the time after the algorithm finishes
         // substracting the time before and after the algorithm and adding it to it's time counter
         bruteForceTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec; // using seconds and nanoseconds to find the time passed
         // here we do the same as above with a different algorithm
         gettimeofday(&timer1, NULL);
-        horspoolsOccurence += horspools(input, pattern, output);
+        horspoolsOccurence += horspools(input, pattern);
         gettimeofday(&timer2, NULL);
         horspoolTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
         // here we do the same as above with a different algorithm
         gettimeofday(&timer1, NULL);
-        boyerOccurence += Boyer_Moore_Alg(pattern, input, output, goodSuffixTable);
+        boyerOccurence += Boyer_Moore_Alg(pattern, input, goodSuffixTable);
         gettimeofday(&timer2, NULL);
         boyerTime += ((timer2.tv_sec-timer1.tv_sec) * 1000000) + timer2.tv_usec - timer1.tv_usec;
         // here we call our marker to mark the pattern
